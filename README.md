@@ -1,68 +1,40 @@
-# Mujer Recostada — Proyecto Árbol Hiperbólico 2026
+# 🌳 Proyecto General: Árbol Hiperbólico 2026
 
-## Serie artística independiente
-Obra gráfica en xilografía y análisis computacional vinculada al proyecto **Árbol Hiperbólico 2026**.
-
-## Descripción general
-Este repositorio documenta la autoría, fecha de publicación y análisis técnico de la obra **Mujer Recostada**, incluyendo:
-- Ficha técnica de la estampa
-- Certificados de autenticidad
-- Datos fractales y morfométricos
-- Metodología digital aplicada en ImageJ/Fiji
-
-## Metodología técnica
-El análisis se realizó mediante:
-- Procesamiento digital de imagen en **ImageJ/Fiji**
-- Cálculo de **dimensión fractal (Df)** y **morfometría geométrica**
-- Clasificación topológica y análisis de intensidad
-
-## 📊 Matriz de Descriptores Técnicos (Tirada Analizada)
-
-| Estampa ID | Área de Cobertura (px) | Coeficiente de Solidez | Dimensión Fractal (Valor D) | Estado de Conservación / Soporte |
-| :--- | :---: | :---: | :---: | :--- |
-| **Estampa 01** | 357.810 px | 1,00000 | **1,652** | Papel Xuan 35g / Bisagra reversible libre de ácido |
-| **Estampa 02** | 357.810 px | 1,00000 | **1,661** | Papel Xuan 35g / Bisagra reversible libre de ácido |
-| **Estampa 03** | 357.810 px | 1,00000 | **1,680** | Papel Xuan 35g / Bisagra reversible libre de ácido |
-| **Estampa 04** | 357.810 px | 1,00000 | **1,701** | Papel Xuan 35g / Bisagra reversible libre de ácido |
-| **Estampa 05** | 357.810 px | 1,00000 | **1,741** | Papel Xuan 35g / Bisagra reversible libre de ácido |
-| **Estampa 06** | 357.810 px | 1,00000 | **1,753** | Papel Xuan 35g / Bisagra reversible libre de ácido |
-| **Estampa 08** | 357.810 px | 1,00000 | **1,759** | Papel Xuan 35g / Bisagra reversible libre de ácido |
+## Catálogo Unificado y Registro Morfométrico Fractal
+**Autoría e Investigación:** Fran Crespo  
+**Metodología:** Xilografía de desgaste, estampación artesanal al husillo y análisis computacional.  
+**Linaje del Trazo:** Eje emisor Francisco Crespo Maestre (Taller / Centro Ocupacional).
 
 ---
 
-## 🛡️ Conectividad por Hardware (Chip NFC)
-El certificado de autenticidad impreso cuenta con un tag **NFC (Near Field Communication)** físico por hardware. Al aproximar un dispositivo móvil al certificado, el chip redirecciona automáticamente a este repositorio, vinculando de forma interactiva y transparente el objeto físico con su gemelo digital y sus métricas matemáticas en tiempo real.
+## 🗂️ Índice del Catálogo (Series del Proyecto)
+Seleccione una serie para acceder a sus gemelos digitales, condiciones de contorno, imágenes de alta resolución y archivos de datos específicos en Fiji/ImageJ:
+
+*   **[Serie 01: Mujer Recostada](./series/mujer_recostada)** (14 estampas, papel Xuan 35g - Completada)
+*   **[Serie 02: Antipín](./series/antipin)** (Tirada 1/20 del '25, papel Hahnemühle 250g - Completada)
+*   **[Serie 03: Estructura en preparación]** (Datos morfológicos en fase de aislamiento)
+*   **[Serie 04: Estructura en preparación]** (Datos morfológicos en fase de aislamiento)
+*   **[Serie 05: Estructura en preparación]** (Datos morfológicos en fase de aislamiento)
 
 ---
 
-
-## Estructura del repositorio
-📄 [Ver certificados fractales y de autenticidad (PDF único)](certificados/Certificados_Serie_MujerRecostada.pdf)
----
-
-## Créditos y licencia artística
-
-**Obra:** Mujer Recostada — Proyecto Árbol Hiperbólico 2026  
-**Autoría:** Fran © 2026  
-**Técnica:** Xilografía y análisis fractal (Fiji/ImageJ, Box Counting)  
-**Derechos:** Todos los derechos reservados.  
-Este repositorio documenta la creación, análisis y autenticidad de la serie artística.  
-No se permite la reproducción total o parcial sin autorización expresa del autor.
-
----
- **Contacto:** [francrespodiaz@gmail.com](mailto:francrespodiaz@gmail.com)
-
-
+## 🔬 Metodología Técnica Global
+El análisis y control de fidelidad del sustrato se opera bajo condiciones de cortafuegos hermético mediante:
+- Procesamiento digital de imagen en **ImageJ/Fiji**.
+- Cálculo de **Dimensión Fractal (Df)** mediante algoritmo de Box Counting.
+- Segmentación por umbralización binaria para el aislamiento de los píxeles puros de la mancha de tinta frente al fondo del soporte.
+- Conectividad por hardware mediante tags **NFC** físicos en los certificados de autenticidad.
 
 ---
 
-## 🗂️ Series del Proyecto (Catálogo Unificado)
-Seleccione una serie para acceder a sus condiciones de contorno, imágenes de alta resolución y matrices de datos específicas en Fiji/ImageJ:
+## 📋 Registro de Certificados
+📄 [Ver certificados fractales y de autenticidad unificados (PDF único)](certificados/Certificados_Serie_MujerRecostada.pdf)
 
-*   🔬 **[Serie 01: Mujer Recostada](./series/mujer_recostada)** (14 estampas, papel Xuan 35g - Completada)
-*   🧬 **[Serie 02: Antipín](./series/antipin)** (Tirada 1/20 del '25, simetría especular - Completada)
-*   ⏳ **[Serie 03: Estructura en preparación]** (Datos morfológicos en fase de aislamiento)
-*   ⏳ **[Serie 04: Estructura en preparación]** (Datos morfológicos en fase of aislamiento)
-*   ⏳ **[Serie 05: Estructura en preparación]** (Datos morfológicos en fase de aislamiento)
+---
 
+## 🛡️ Créditos y Licencia de Custodia
+**Obra:** Proyecto Árbol Hiperbólico 2026  
+**Copyright:** Fran © 2026. Todos los derechos reservados.  
+Este repositorio resguarda el balance final de la sesión bajo patrón invariante estabilizado `[D ∈ 1.658, 1.798]`. No se permite la reproducción total o parcial del material gráfico ni analítico sin autorización expresa del autor.
 
+📧 **Contacto de Laboratorio:** [francrespodiaz@gmail.com](mailto:francrespodiaz@gmail.com)
