@@ -16,6 +16,26 @@ El análisis se realizó mediante:
 - Cálculo de **dimensión fractal (Df)** y **morfometría geométrica**
 - Clasificación topológica y análisis de intensidad
 
+## 📊 Matriz de Descriptores Técnicos (Tirada Analizada)
+
+| Estampa ID | Área de Cobertura (px) | Coeficiente de Solidez | Dimensión Fractal (Valor D) | Estado de Conservación / Soporte |
+| :--- | :---: | :---: | :---: | :--- |
+| **Estampa 01** | 357.810 px | 1,00000 | **1,652** | Papel Xuan 35g / Bisagra reversible libre de ácido |
+| **Estampa 02** | 357.810 px | 1,00000 | **1,661** | Papel Xuan 35g / Bisagra reversible libre de ácido |
+| **Estampa 03** | 357.810 px | 1,00000 | **1,680** | Papel Xuan 35g / Bisagra reversible libre de ácido |
+| **Estampa 04** | 357.810 px | 1,00000 | **1,701** | Papel Xuan 35g / Bisagra reversible libre de ácido |
+| **Estampa 05** | 357.810 px | 1,00000 | **1,741** | Papel Xuan 35g / Bisagra reversible libre de ácido |
+| **Estampa 06** | 357.810 px | 1,00000 | **1,753** | Papel Xuan 35g / Bisagra reversible libre de ácido |
+| **Estampa 08** | 357.810 px | 1,00000 | **1,759** | Papel Xuan 35g / Bisagra reversible libre de ácido |
+
+---
+
+## 🛡️ Conectividad por Hardware (Chip NFC)
+El certificado de autenticidad impreso cuenta con un tag **NFC (Near Field Communication)** físico por hardware. Al aproximar un dispositivo móvil al certificado, el chip redirecciona automáticamente a este repositorio, vinculando de forma interactiva y transparente el objeto físico con su gemelo digital y sus métricas matemáticas en tiempo real.
+
+---
+
+
 ## Estructura del repositorio
 📄 [Ver certificados fractales y de autenticidad (PDF único)](certificados/Certificados_Serie_MujerRecostada.pdf)
 ---
