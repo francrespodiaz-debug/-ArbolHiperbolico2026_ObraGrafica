@@ -53,3 +53,16 @@ No se permite la reproducción total o parcial sin autorización expresa del aut
  **Contacto:** [francrespodiaz@gmail.com](mailto:francrespodiaz@gmail.com)
 
 
+
+---
+
+## 🗂️ Series del Proyecto (Catálogo Unificado)
+Seleccione una serie para acceder a sus condiciones de contorno, imágenes de alta resolución y matrices de datos específicas en Fiji/ImageJ:
+
+*   🔬 **[Serie 01: Mujer Recostada](./series/mujer_recostada)** (14 estampas, papel Xuan 35g - Completada)
+*   🧬 **[Serie 02: Antipín](./series/antipin)** (Tirada 1/20 del '25, simetría especular - Completada)
+*   ⏳ **[Serie 03: Estructura en preparación]** (Datos morfológicos en fase de aislamiento)
+*   ⏳ **[Serie 04: Estructura en preparación]** (Datos morfológicos en fase of aislamiento)
+*   ⏳ **[Serie 05: Estructura en preparación]** (Datos morfológicos en fase de aislamiento)
+
+
