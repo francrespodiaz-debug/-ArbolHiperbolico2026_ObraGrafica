@@ -12,7 +12,8 @@ Seleccione una serie para acceder a sus gemelos digitales, condiciones de contor
 
 *   **[Serie 01: Mujer Recostada](./series/mujer_recostada)** (14 estampas, papel Xuan 35g - Completada)
 *   **[Serie 02: Antipín](./series/antipin)** (Tirada 1/20 del '25, papel Hahnemühle 250g - Completada)
-*   **[Serie 03: Estructura en preparación]** (Datos morfológicos en fase de aislamiento)
+* **[Serie 03: Zooformes](./series/zooforme)** (Tirada 1/10 del '25, papel Hahnemühle 250g - Completada)
+
 *   **[Serie 04: Estructura en preparación]** (Datos morfológicos en fase de aislamiento)
 *   **[Serie 05: Estructura en preparación]** (Datos morfológicos en fase de aislamiento)
 
