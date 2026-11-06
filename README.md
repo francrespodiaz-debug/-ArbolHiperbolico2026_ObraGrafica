@@ -3,9 +3,9 @@
 ## Catálogo Unificado y Registro Morfométrico Fractal
 **Autoría e Investigación:** Fran Crespo  
 **Metodología:** Xilografía de desgaste, estampación artesanal al husillo y análisis computacional.  
-**Linaje del Trazo:** Eje emisor Francisco Crespo Maestre (Taller / Centro Ocupacional).
 
----
+
+
 
 ## 🗂️ Índice del Catálogo (Series del Proyecto)
 Seleccione una serie para acceder a sus gemelos digitales, condiciones de contorno, imágenes de alta resolución y archivos de datos específicos en Fiji/ImageJ:
