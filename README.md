@@ -17,21 +17,21 @@ Seleccione una serie para acceder a sus gemelos digitales, condiciones de contor
 *   **[Serie 04: Estructura en preparación]** (Datos morfológicos en fase de aislamiento)
 *   **[Serie 05: Estructura en preparación]** (Datos morfológicos en fase de aislamiento)
 
----
+
 
 ## 🔬 Metodología Técnica Global
-El análisis y control de fidelidad del sustrato se opera bajo condiciones de cortafuegos hermético mediante:
+ 
 - Procesamiento digital de imagen en **ImageJ/Fiji**.
 - Cálculo de **Dimensión Fractal (Df)** mediante algoritmo de Box Counting.
 - Segmentación por umbralización binaria para el aislamiento de los píxeles puros de la mancha de tinta frente al fondo del soporte.
 - Conectividad por hardware mediante tags **NFC** físicos en los certificados de autenticidad.
 
----
+
 
 ## 📋 Registro de Certificados
 📄 [Ver certificados fractales y de autenticidad unificados (PDF único)](certificados/Certificados_Serie_MujerRecostada.pdf)
 
----
+
 
 ## 🛡️ Créditos y Licencia de Custodia
 **Obra:** Proyecto Árbol Hiperbólico 2026  
