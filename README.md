@@ -11,10 +11,13 @@
 Seleccione una serie para acceder a sus gemelos digitales, condiciones de contorno, imágenes de alta resolución y archivos de datos específicos en Fiji/ImageJ:
 
 *   **[Serie 01: Mujer Recostada](./series/mujer_recostada)** (14 estampas, papel Xuan 35g - Completada)
-*   **[Serie 02: Antipín](./series/antipin)** (Tirada 1/20 del '25, papel Hahnemühle 250g - Completada)
-* **[Serie 03: Zooformes](./series/zooforme)** (Tirada 1/10 del '25, papel Hahnemühle 250g - Completada)
+*   **[Serie 02: Antipín](./series/antipin)** ( 20 estampas, papel Hahnemühle 250g - Completada)
+* **[Serie 03: Zooformes](./series/zooforme)** ( 10 estampas, papel Hahnemühle 250g - Completada)
 
-*   **[Serie 04: Estructura en preparación]** (Datos morfológicos en fase de aislamiento)
+* **[Serie 04: La danza de las sombras](./certificados/Resultados_Morfologia_y_Fractal_Serie_Completo.pdf)** ( 15 estampas, papel Hahnemühle - Completada)
+
+
+  
 *   **[Serie 05: Estructura en preparación]** (Datos morfológicos en fase de aislamiento)
 
 
