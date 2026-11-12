@@ -110,3 +110,36 @@
         s1: { name: "Serie 01: Mujer Recostada", folder: "series/mujer_recostada", prefix: "Mujerrecostada", digits: 2, count: 14, support: "Papel Xuan 35g", pdf: "certificados/Certificados_Serie_MujerRecostada.pdf", desc: "Serie 01: Mujer Recostada — 14 estampas originales sobre papel Xuan 35g. Gemelos digitales y análisis de dimensión fractal." },
         s2: { name: "Serie 02: Antipín", folder: "series/antipin", prefix: "Antipin", digits: 3, count: 20, support: "Papel Hahnemühle 250g", pdf: "certificados/Certificados_Serie_Antipin-v3.pdf", desc: "Serie 02: Antipín — 20 estampas sobre papel Hahnemühle 250g. Registro morfométrico y segmentación binaria." },
         s3: { name: "Serie 03: Zooformes", folder: "series/zooforme", prefix: "zooforme", digits: 2, count: 10, support: "Papel Hahnemühle 250g", pdf: "certificados/Certificados_Serie_Zooforme_Fran_Crespo.pdf", desc: "Serie 03: Zooformes — 10 estampas sobre papel Hahnemühle 250g. Estudio de condiciones de contorno y Box Counting." },
+        s4: { name: "Serie 04: La Danza de las Sombras", folder: "series/la_danza_de_las_sombras", prefix: "curro", digits: 3, count: 15, support: "Papel Hahnemühle 250g", pdf: "certificados/Certificados_Serie_La_Danza_de_las_Sombras.pdf", desc: "Serie 04: La Danza de las Sombras — 15 estampas sobre papel Hahnemühle 250g. Imágenes de alta resolución y métricas en ImageJ." }
+    };
+    const allWorks = [];
+    Object.keys(seriesConfig).forEach(key => {
+        const s = seriesConfig[key];
+        for (let i = 1; i <= s.count; i++) {
+            const num = String(i).padStart(s.digits, '0');
+            const fileName = `${s.prefix}${num}.png`;
+            allWorks.push({ serieKey: key, serieName: s.name, title: `${s.prefix}${num}`, fileName: fileName, src: `${s.folder}/${fileName}`, support: s.support, pdf: s.pdf });
+        }
+    });
+    const galleryEl = document.getElementById('gallery'), descEl = document.getElementById('serieDesc'), modalEl = document.getElementById('modal'), modalImg = document.getElementById('modalImg'), modalTitle = document.getElementById('modalTitle'), modalMeta = document.getElementById('modalMeta'), modalPdf = document.getElementById('modalPdf');
+    function renderGallery(filter) {
+        galleryEl.innerHTML = '';
+        const filtered = filter === 'all' ? allWorks : allWorks.filter(w => w.serieKey === filter);
+        descEl.textContent = filter === 'all' ? "Mostrando el catálogo completo de 59 estampas originales digitalizadas. Haz clic sobre cualquier obra para ampliarla." : seriesConfig[filter].desc;
+        filtered.forEach(work => {
+            const card = document.createElement('div');
+            card.className = 'art-card';
+            card.innerHTML = `<img class="art-thumb" src="${work.src}" alt="${work.title}" loading="lazy"><div class="art-info"><p class="art-title">${work.title}</p><p class="art-sub">${work.serieName} · ${work.support}</p></div>`;
+            card.addEventListener('click', () => { modalImg.src = work.src; modalTitle.textContent = `${work.title} (${work.serieName})`; modalMeta.textContent = `Soporte: ${work.support} · Archivo: ${work.fileName}`; modalPdf.href = work.pdf; modalEl.classList.add('open'); });
+            galleryEl.appendChild(card);
+        });
+    }
+    document.querySelectorAll('.tab-btn').forEach(btn => { btn.addEventListener('click', () => { document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); renderGallery(btn.dataset.serie); }); });
+    document.getElementById('closeModal').addEventListener('click', () => modalEl.classList.remove('open'));
+    modalEl.addEventListener('click', (e) => { if (e.target === modalEl) modalEl.classList.remove('open'); });
+    renderGallery('all');
+</script>
+</body>
+</html>
+
+ 
