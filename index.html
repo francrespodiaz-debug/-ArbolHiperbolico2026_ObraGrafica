@@ -142,4 +142,43 @@
 </body>
 </html>
 
- 
+ <!-- 1. Motor de estadísticas privadas GoatCounter -->
+<script data-goatcounter="https://goatcounter.com"
+        async src="//gc.zgo.at/count.js"></script>
+
+<!-- 2. Medición invisible de cada obra (.art-card) y PDF (.btn-pdf) -->
+<script>
+  document.addEventListener('click', function(e) {
+    if (!window.goatcounter) return;
+
+    // A) Si hacen clic en una de las 59 obras del catálogo
+    const artCard = e.target.closest('.art-card');
+    if (artCard) {
+      const titleEl = artCard.querySelector('.art-title');
+      if (titleEl) {
+        const nombreObra = titleEl.textContent.trim();
+        window.goatcounter.count({
+          path: 'obra/' + nombreObra,
+          title: 'Obra: ' + nombreObra,
+          event: true
+        });
+      }
+      return;
+    }
+
+    // B) Si hacen clic en "Ver / Descargar PDF"
+    const btnPdf = e.target.closest('.btn-pdf');
+    if (btnPdf) {
+      const certCard = btnPdf.closest('.cert-card');
+      const serieEl = certCard ? certCard.querySelector('h3') : null;
+      const nombreSerie = serieEl ? serieEl.textContent.trim() : btnPdf.getAttribute('href');
+      window.goatcounter.count({
+        path: 'pdf/' + nombreSerie,
+        title: 'PDF: ' + nombreSerie,
+        event: true
+      });
+    }
+  });
+</script>
+</body>
+</html>
