@@ -474,6 +474,11 @@
             <b>1.</b> Apoya un dedo en el <b>Pingüino Izquierdo</b> y otro en el <b>Pingüino Derecho</b> (podéis hacerlo entre dos compañeros).<br><br>
             <b>2.</b> Deslizad los dedos siguiendo los caminos hacia el centro hasta llegar a los <b>ojos compartidos</b>.
           </p>
+                    <div style="display:flex; gap:12px; margin-bottom:14px;">
+            <span id="maze-hits" style="font-size:1.25rem; font-weight:800; color:#22543d; background:#c6f6d5; padding:8px 14px; border-radius:12px;">✅ En meta: 0 / 2</span>
+            <span id="maze-errors" style="font-size:1.25rem; font-weight:800; color:#742a2a; background:#fed7d7; padding:8px 14px; border-radius:12px;">💥 Choques: 0</span>
+          </div>
+
           <div class="feedback-box" id="maze-feedback">Arrastra los dos pingüinos hacia el centro para descubrir el antílope.</div>
         </div>
                <div style="display:flex; gap:10px; flex-wrap:wrap;">
@@ -492,7 +497,9 @@
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-wrap:wrap; gap:10px;">
       <h2 class="panel-title" style="margin:0;">🔍 Encuentra las 4 diferencias entre ambas estampas</h2>
       <div style="display:flex; gap:12px; align-items:center;">
-        <span id="diff-counter" style="font-size:1.35rem; font-weight:800; color:var(--success); background:#c6f6d5; padding:8px 16px; border-radius:12px;">Encontradas: 0 / 4</span>
+                <span id="diff-counter" style="font-size:1.3rem; font-weight:800; color:#22543d; background:#c6f6d5; padding:8px 14px; border-radius:12px;">✅ Aciertos: 0 / 4</span>
+        <span id="diff-errors" style="font-size:1.3rem; font-weight:800; color:#742a2a; background:#fed7d7; padding:8px 14px; border-radius:12px;">❌ Errores: 0</span>
+
         <button class="btn-xl outline" onclick="nextDiffBoard()">🖼️ Otra estampa</button>
         <button class="btn-xl secondary" onclick="initDiffGame()">🔄 Reiniciar</button>
       </div>
@@ -710,11 +717,12 @@
   ];
 
 
-  let currentMazeLvl = 0;
+    let currentMazeLvl = 0;
   let leftP = { x: 0, y: 0, done: false };
   let rightP = { x: 0, y: 0, done: false };
   let goalPos = { x: 0, y: 0 };
   let activeTouches = {}, mazeCompleted = false;
+  let mazeHits = 0, mazeErrors = 0, lastHitSound = 0;
 
   function setMazeLevel(lvl) {
     currentMazeLvl = lvl;
@@ -724,7 +732,7 @@
 
   function initMaze() {
     const grid = mazeLevels[currentMazeLvl];
-    const rows = grid.length, cols = grid[0].length;
+    const rows = grid.length, cols = grid.length;
     const c = document.getElementById('mazeCanvas');
     const cellW = c.width / cols, cellH = c.height / rows;
 
@@ -732,6 +740,10 @@
     rightP = { x: cellW * (cols - 1.5), y: cellH * (rows - 1.5), done: false };
     mazeCompleted = false;
     activeTouches = {};
+    mazeHits = 0;
+    mazeErrors = 0;
+    document.getElementById('maze-hits').textContent = '✅ En meta: 0 / 2';
+    document.getElementById('maze-errors').textContent = '💥 Choques: 0';
 
     for (let r = 0; r < rows; r++) {
       for (let col = 0; col < cols; col++) {
@@ -746,7 +758,7 @@
 
   function canMoveTo(nx, ny) {
     const grid = mazeLevels[currentMazeLvl];
-    const rows = grid.length, cols = grid[0].length;
+    const rows = grid.length, cols = grid.length;
     const c = document.getElementById('mazeCanvas');
     const cellW = c.width / cols, cellH = c.height / rows;
     const col = Math.floor(nx / cellW), row = Math.floor(ny / cellH);
@@ -764,7 +776,7 @@
     }
 
     const grid = mazeLevels[currentMazeLvl];
-    const rows = grid.length, cols = grid[0].length;
+    const rows = grid.length, cols = grid.length;
     const cellW = c.width / cols, cellH = c.height / rows;
 
     ctx.save(); ctx.globalAlpha = 0.08; ctx.drawImage(mazeImg, 20, 20, c.width - 40, c.height - 40); ctx.restore();
@@ -811,60 +823,73 @@
 
     const steps = 6;
     const dx = (tx - p.x) / steps, dy = (ty - p.y) / steps;
+    let blocked = false;
     for (let s = 0; s < steps; s++) {
-      if (canMoveTo(p.x + dx, p.y)) p.x += dx;
-      if (canMoveTo(p.x, p.y + dy)) p.y += dy;
+      const movedX = canMoveTo(p.x + dx, p.y);
+      if (movedX) p.x += dx;
+      const movedY = canMoveTo(p.x, p.y + dy);
+      if (movedY) p.y += dy;
+      if (!movedX && !movedY) blocked = true;
+    }
+
+    if (blocked && Date.now() - lastHitSound > 650) {
+      lastHitSound = Date.now();
+      mazeErrors++;
+      document.getElementById('maze-errors').textContent = '💥 Choques: ' + mazeErrors;
+      playTone(190, 0.14, 'sawtooth');
     }
 
     if (Math.hypot(p.x - goalPos.x, p.y - goalPos.y) < 26) {
       p.x = goalPos.x; p.y = goalPos.y; p.done = true;
       delete activeTouches[e.pointerId];
+      mazeHits++;
+      document.getElementById('maze-hits').textContent = '✅ En meta: ' + mazeHits + ' / 2';
       playTone(659.25, 0.2);
       document.getElementById('maze-feedback').textContent = '✅ ¡Un pingüino ya llegó al antílope! Falta el otro compañero.';
     }
 
     if (leftP.done && rightP.done && !mazeCompleted) {
       mazeCompleted = true;
-      document.getElementById('maze-feedback').textContent = '🎉 ¡LABERINTO COMPLETADO! Los dos pingüinos han reconstruido el antílope.';
+      document.getElementById('maze-feedback').textContent = '🎉 ¡COMPLETADO! Aciertos: 2/2 · Choques: ' + mazeErrors;
       playSuccessChord();
     }
     drawMaze();
   });
   mazeCanvas.addEventListener('pointerup', e => { delete activeTouches[e.pointerId]; });
 
-
-   /* MÓDULO 3: JUEGO REAL DE 4 DIFERENCIAS (ACIERTOS Y FALLOS) */
+  /* MÓDULO 3: DIFERENCIAS SUTILES (CORTES BLANCOS DE GUBIA + ACIERTOS/ERRORES) */
   const diffBoards = [
     {
       src: 'series/antipin/Antipin002.png',
       spots: [
-        { x: 185, y: 120, r: 22, color: '#ffffff', found: false },
-        { x: 315, y: 220, r: 16, color: '#000000', found: false },
-        { x: 115, y: 340, r: 24, color: '#000000', found: false },
-        { x: 230, y: 390, r: 22, color: '#ffffff', found: false }
+        { x: 185, y: 120, w: 14, h: 5, ang: -0.5, found: false },
+        { x: 278, y: 165, w: 15, h: 5, ang: 0.4, found: false },
+        { x: 112, y: 315, w: 16, h: 6, ang: 1.1, found: false },
+        { x: 345, y: 365, w: 15, h: 5, ang: -0.9, found: false }
       ]
     },
     {
       src: 'series/mujer_recostada/Mujerrecostada01.png',
       spots: [
-        { x: 75, y: 80, r: 18, color: '#000000', found: false },
-        { x: 175, y: 205, r: 24, color: '#000000', found: false },
-        { x: 375, y: 290, r: 24, color: '#000000', found: false },
-        { x: 95, y: 295, r: 22, color: '#000000', found: false }
+        { x: 92, y: 135, w: 16, h: 6, ang: 0.6, found: false },
+        { x: 215, y: 205, w: 18, h: 6, ang: -0.3, found: false },
+        { x: 345, y: 265, w: 18, h: 6, ang: 0.4, found: false },
+        { x: 145, y: 335, w: 16, h: 6, ang: -0.5, found: false }
       ]
     },
     {
       src: 'series/zooforme/zooforme01.png',
       spots: [
-        { x: 150, y: 140, r: 24, color: '#000000', found: false },
-        { x: 310, y: 160, r: 24, color: '#ffffff', found: false },
-        { x: 220, y: 270, r: 26, color: '#000000', found: false },
-        { x: 160, y: 360, r: 24, color: '#ffffff', found: false }
+        { x: 165, y: 150, w: 16, h: 6, ang: 0.3, found: false },
+        { x: 295, y: 175, w: 16, h: 6, ang: -0.4, found: false },
+        { x: 215, y: 280, w: 18, h: 6, ang: 0.2, found: false },
+        { x: 175, y: 355, w: 16, h: 6, ang: -0.6, found: false }
       ]
     }
   ];
   let currentDiffIdx = 0;
   let diffFoundCount = 0;
+  let diffErrorCount = 0;
 
   function nextDiffBoard() {
     currentDiffIdx = (currentDiffIdx + 1) % diffBoards.length;
@@ -876,8 +901,10 @@
     const board = diffBoards[currentDiffIdx];
     board.spots.forEach(s => s.found = false);
     diffFoundCount = 0;
-    document.getElementById('diff-counter').textContent = 'Encontradas: 0 / 4';
-    document.getElementById('diff-feedback').textContent = 'Toca sobre las 4 zonas diferentes entre ambas imágenes.';
+    diffErrorCount = 0;
+    document.getElementById('diff-counter').textContent = '✅ Aciertos: 0 / 4';
+    document.getElementById('diff-errors').textContent = '❌ Errores: 0';
+    document.getElementById('diff-feedback').textContent = 'Busca los 4 pequeños cortes blancos donde falta un poquito de tinta negra.';
     drawDiffCanvases();
   }
 
@@ -893,18 +920,21 @@
       ctx1.drawImage(img, 10, 10, 440, 440);
       ctx2.drawImage(img, 10, 10, 440, 440);
 
+      // Pequeños cortes blancos tipo gubia que quitan una línea fina de tinta negra
       board.spots.forEach(s => {
-        ctx2.fillStyle = s.color;
-        ctx2.beginPath();
-        ctx2.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-        ctx2.fill();
+        ctx2.save();
+        ctx2.translate(s.x, s.y);
+        ctx2.rotate(s.ang);
+        ctx2.fillStyle = '#ffffff';
+        ctx2.fillRect(-s.w / 2, -s.h / 2, s.w, s.h);
+        ctx2.restore();
 
         if (s.found) {
           [ctx1, ctx2].forEach(ctx => {
             ctx.strokeStyle = '#2f855a';
-            ctx.lineWidth = 6;
+            ctx.lineWidth = 5;
             ctx.beginPath();
-            ctx.arc(s.x, s.y, s.r + 10, 0, Math.PI * 2);
+            ctx.arc(s.x, s.y, 24, 0, Math.PI * 2);
             ctx.stroke();
           });
         }
@@ -922,7 +952,7 @@
 
     let hit = false;
     board.spots.forEach(s => {
-      if (!s.found && Math.hypot(x - s.x, y - s.y) <= s.r + 22) {
+      if (!s.found && Math.hypot(x - s.x, y - s.y) <= 28) {
         s.found = true;
         hit = true;
         diffFoundCount++;
@@ -930,18 +960,20 @@
     });
 
     if (hit) {
-      document.getElementById('diff-counter').textContent = 'Encontradas: ' + diffFoundCount + ' / 4';
+      document.getElementById('diff-counter').textContent = '✅ Aciertos: ' + diffFoundCount + ' / 4';
       drawDiffCanvases();
       if (diffFoundCount === 4) {
-        document.getElementById('diff-feedback').textContent = '🎉 ¡ENHORABUENA! Habéis encontrado las 4 diferencias.';
+        document.getElementById('diff-feedback').textContent = '🎉 ¡COMPLETADO! Aciertos: 4/4 · Errores: ' + diffErrorCount;
         playSuccessChord();
       } else {
-        document.getElementById('diff-feedback').textContent = '✅ ¡Acierto! Lleváis ' + diffFoundCount + ' de 4 diferencias.';
+        document.getElementById('diff-feedback').textContent = '✅ ¡Buen ojo! Lleváis ' + diffFoundCount + ' de 4 diferencias.';
         playTone(659.25, 0.22);
       }
     } else {
+      diffErrorCount++;
+      document.getElementById('diff-errors').textContent = '❌ Errores: ' + diffErrorCount;
       playTone(220, 0.2, 'sawtooth');
-      document.getElementById('diff-feedback').textContent = '❌ Aquí son iguales. ¡Fijaos bien en los detalles blancos y negros!';
+      document.getElementById('diff-feedback').textContent = '❌ Aquí son iguales. Busca dónde falta una pequeña línea de tinta negra.';
     }
   }
 
