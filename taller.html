@@ -596,11 +596,22 @@
     osc.start(audioCtx.currentTime + delay);
     osc.stop(audioCtx.currentTime + delay + duration);
   }
-  function playSuccessChord() {
+    function playSuccessChord() {
     playTone(523.25, 0.35, 'triangle', 0);
     playTone(659.25, 0.35, 'triangle', 0.08);
     playTone(783.99, 0.50, 'triangle', 0.16);
+    document.querySelectorAll('.screen.active .feedback-box').forEach(box => {
+      if (!box.querySelector('.btn-finish-home')) {
+        const btn = document.createElement('button');
+        btn.className = 'btn-xl success btn-finish-home';
+        btn.style.marginLeft = '14px';
+        btn.textContent = '🏠 Volver al Inicio';
+        btn.onclick = goHome;
+        box.appendChild(btn);
+      }
+    });
   }
+
   function toggleSound() {
     soundEnabled = !soundEnabled;
     document.getElementById('btnSound').textContent = soundEnabled ? '🔊 Sonido ON' : '🔇 Silencio';
@@ -650,7 +661,7 @@
  
      /* MÓDULO 2: LABERINTO REAL CON BIFURCACIONES Y 3 NIVELES */
   const mazeImg = new Image(); mazeImg.src = 'series/antipin/Antipin002.png';
-  const mazeLevels = [
+    const mazeLevels = [
     // NIVEL 1 (9x9 - Fácil)
     [
       "#########",
@@ -666,14 +677,14 @@
     // NIVEL 2 (11x11 - Medio)
     [
       "###########",
-      "#....#....#",
-      "#.##.#.##.#",
-      "#.#.....#.#",
-      "#.#.###.#.#",
-      "#...#G#...#",
-      "###.#.#.###",
       "#...#.#...#",
-      "#.#.###.#.#",
+      "#.#.#.#.#.#",
+      "#.#.....#.#",
+      "#.###.###.#",
+      "#...#G#...#",
+      "#.#.#.#.#.#",
+      "#.#...#.#.#",
+      "#.###.###.#",
       "#.........#",
       "###########"
     ],
@@ -687,13 +698,14 @@
       "#...#...#...#",
       "###.#.G.#.###",
       "#...#...#...#",
-      "#.#.#####.#.#",
+      "#.#.###.#.#.#",
       "#.#...#...#.#",
       "#.###.#.###.#",
       "#...........#",
       "#############"
     ]
   ];
+
 
   let currentMazeLvl = 0;
   let leftP = { x: 0, y: 0, done: false };
