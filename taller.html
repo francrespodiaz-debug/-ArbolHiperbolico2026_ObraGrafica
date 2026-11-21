@@ -627,7 +627,7 @@
   }
 
   /* MÓDULO 1: ANTIPÍN */
-  let votes =;
+  let votes = new Array(4).fill(0);
   function voteAntipin(idx, msg) {
     votes[idx]++;
     document.getElementById('vote-' + idx).textContent = votes[idx];
@@ -636,7 +636,7 @@
     playSuccessChord();
   }
   function resetAntipin() {
-    votes =;
+    votes = new Array(4).fill(0);
     for (let i = 0; i < 4; i++) document.getElementById('vote-' + i).textContent = '0';
     document.querySelectorAll('#screen-antipin .choice-btn').forEach(b => b.classList.remove('selected'));
     document.getElementById('antipin-feedback').textContent = 'Votos reiniciados. ¡Observad de nuevo!';
