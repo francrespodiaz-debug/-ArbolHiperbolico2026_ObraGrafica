@@ -385,16 +385,6 @@
 </style>
 </head>
 <body>
-
-<header>
-  <h1>🎨 Taller Plástico y Gestáltico · Árbol Hiperbólico</h1>
-  <div class="top-controls">
-    <button class="btn-top" id="btnSound" onclick="toggleSound()">🔊 Sonido ON</button>
-    <button class="btn-top" onclick="toggleFullscreen()">⛶ Pantalla Completa</button>
-    <button class="btn-top active-home" onclick="goHome()">🏠 Inicio</button>
-  </div>
-</header>
-
 <main>
   <!-- PANTALLA 0: MENÚ PRINCIPAL -->
   <section id="screen-home" class="screen active">
@@ -408,3 +398,448 @@
         <div class="menu-icon">🛤️🐧</div>
         <div class="menu-title">2. Camino de los Pingüinos</div>
         <div class="menu-desc">Une los dos caminos con los dedos para formar el antílope</div>
+      </div>
+      <div class="menu-card" onclick="openModule('diferencias')">
+        <div class="menu-icon">🔍✨</div>
+        <div class="menu-title">3. Encuentra las Diferencias</div>
+        <div class="menu-desc">Compara dos estampas y señala dónde talló la gubia</div>
+      </div>
+      <div class="menu-card" onclick="openModule('mujer')">
+        <div class="menu-icon">🛋️🏷️</div>
+        <div class="menu-title">4. Mujer Recostada</div>
+        <div class="menu-desc">Coloca las 7 etiquetas y prepárate para tocar la matriz láser</div>
+      </div>
+      <div class="menu-card" onclick="openModule('zooformes')">
+        <div class="menu-icon">🧩🐾</div>
+        <div class="menu-title">5. Puzles de Zooformes</div>
+        <div class="menu-desc">Reconstruye las estampas en grupo pieza a pieza</div>
+      </div>
+      <div class="menu-card" onclick="openModule('laser')">
+        <div class="menu-icon">✏️⚡</div>
+        <div class="menu-title">6. Lienzo para Láser</div>
+        <div class="menu-desc">Dibuja en blanco y negro puro para grabar en goma EVA</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MÓDULO 1: ¿QUÉ VES EN ANTIPÍN? -->
+  <section id="screen-antipin" class="screen">
+    <div class="work-area">
+      <div class="artwork-stage">
+        <img id="img-antipin" src="series/antipin/Antipin002.png" alt="Antipín">
+      </div>
+      <div class="side-panel">
+        <div>
+          <h2 class="panel-title">¿Qué ves en esta estampa?</h2>
+          <p class="panel-subtitle">Toca lo que descubras primero. ¡Todas las miradas son válidas!</p>
+          <div class="choice-list">
+            <button class="choice-btn" onclick="voteAntipin(0, '🦌 ¡Bien visto! Mirando de frente aparece la cabeza del antílope con sus cuernos.')">
+              <span>🦌 Una cabeza de antílope</span>
+              <span class="vote-badge" id="vote-0">0</span>
+            </button>
+            <button class="choice-btn" onclick="voteAntipin(1, '🐧 ¡Genial! A cada lado hay un pingüino de perfil mirando hacia afuera.')">
+              <span>🐧 Dos pingüinos mirando afuera</span>
+              <span class="vote-badge" id="vote-1">0</span>
+            </button>
+            <button class="choice-btn" onclick="voteAntipin(2, '👀 ¡Asombroso! El antílope y los pingüinos comparten exactamente los mismos ojos.')">
+              <span>👀 ¡Veo las dos cosas a la vez!</span>
+              <span class="vote-badge" id="vote-2">0</span>
+            </button>
+            <button class="choice-btn" onclick="voteAntipin(3, '🏺 ¡Buen ojo! Si miras el espacio blanco del centro aparece una copa o jarrón.')">
+              <span>🏺 Un jarrón blanco en el centro</span>
+              <span class="vote-badge" id="vote-3">0</span>
+            </button>
+          </div>
+        </div>
+        <div class="feedback-box" id="antipin-feedback">Toca una tarjeta para compartir lo que ves con el grupo.</div>
+        <div style="display:flex; gap:12px; flex-wrap:wrap;">
+          <button class="btn-xl outline" onclick="toggleEffect('img-antipin', 'inverted')">🌓 Invertir Blanco/Negro</button>
+          <button class="btn-xl outline" onclick="toggleEffect('img-antipin', 'mirrored')">🪞 Ver como Matriz</button>
+          <button class="btn-xl secondary" onclick="resetAntipin()">🔄 Reiniciar votos</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MÓDULO 2: CAMINO DE LOS PINGÜINOS -->
+  <section id="screen-laberinto" class="screen">
+    <div class="work-area">
+      <div class="artwork-stage" style="flex-direction:column;">
+        <canvas id="mazeCanvas" width="540" height="540"></canvas>
+      </div>
+      <div class="side-panel">
+        <div>
+          <h2 class="panel-title">El Camino de los Pingüinos</h2>
+          <p class="panel-subtitle">
+            <b>1.</b> Apoya un dedo en el <b>Pingüino Izquierdo</b> y otro en el <b>Pingüino Derecho</b> (podéis hacerlo entre dos compañeros).<br><br>
+            <b>2.</b> Deslizad los dedos siguiendo los caminos hacia el centro hasta llegar a los <b>ojos compartidos</b>.
+          </p>
+          <div class="feedback-box" id="maze-feedback">Arrastra los dos pingüinos hacia el centro para descubrir el antílope.</div>
+        </div>
+        <div style="display:flex; gap:12px;">
+          <button class="btn-xl success" onclick="initMaze()">🔄 Volver a empezar</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MÓDULO 3: ENCUENTRA LAS DIFERENCIAS -->
+  <section id="screen-diferencias" class="screen">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+      <h2 class="panel-title" style="margin:0;">🔍 Encuentra las diferencias de talla entre ambas estampas</h2>
+      <div style="display:flex; gap:12px; align-items:center;">
+        <span id="diff-counter" style="font-size:1.3rem; font-weight:800; color:var(--success);">Marcadas: 0</span>
+        <button class="btn-xl outline" onclick="changeDiffPair()">🖼️ Cambiar pareja</button>
+        <button class="btn-xl secondary" onclick="clearDiffMarkers()">🧹 Borrar marcas</button>
+      </div>
+    </div>
+    <div class="diff-grid">
+      <div class="diff-card" id="diff-left" onclick="markDiff(event)">
+        <strong style="font-size:1.15rem; margin-bottom:6px;">Estampa Inicial (Más tinta)</strong>
+        <img id="diff-img-1" src="series/antipin/Antipin001.png" alt="Inicial">
+      </div>
+      <div class="diff-card" id="diff-right" onclick="markDiff(event)">
+        <strong style="font-size:1.15rem; margin-bottom:6px;">Estampa Desgastada (Más talla)</strong>
+        <img id="diff-img-2" src="series/antipin/Antipin018.png" alt="Desgastada">
+      </div>
+    </div>
+  </section>
+
+  <!-- MÓDULO 4: MUJER RECOSTADA (7 ETIQUETAS + MATRIZ) -->
+  <section id="screen-mujer" class="screen">
+    <div class="work-area">
+      <div class="artwork-stage" id="mujer-stage">
+        <img id="img-mujer" src="series/mujer_recostada/Mujerrecostada01.png" alt="Mujer reclinada sobre respaldo de sofá">
+      </div>
+      <div class="side-panel">
+        <div>
+          <h2 class="panel-title">Mujer reclinada sobre respaldo de sofá</h2>
+          <p class="panel-subtitle">
+            Toca una etiqueta y luego toca sobre la imagen (o arrástrala) para ubicar cada parte del cuerpo. Observa cómo su cuerpo dibuja la forma del sofá invisible.
+          </p>
+          <div class="tags-pool" id="tags-pool"></div>
+        </div>
+        <div class="feedback-box" id="mujer-feedback">Selecciona una etiqueta amarilla para colocarla sobre la obra.</div>
+        <div style="display:flex; gap:12px; flex-wrap:wrap;">
+          <button class="btn-xl outline" onclick="toggleEffect('img-mujer', 'mirrored')">🪞 Ver como Matriz Láser</button>
+          <button class="btn-xl outline" onclick="toggleEffect('img-mujer', 'inverted')">🌓 Invertir Blanco/Negro</button>
+          <button class="btn-xl secondary" onclick="resetMujerTags()">🔄 Recoger etiquetas</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MÓDULO 5: PUZLES DE ZOOFORMES -->
+  <section id="screen-zooformes" class="screen">
+    <div class="puzzle-layout">
+      <div class="artwork-stage" style="flex-direction:column;">
+        <div id="puzzle-board" class="puzzle-board"></div>
+      </div>
+      <div class="side-panel">
+        <div>
+          <h2 class="panel-title">🧩 Puzle Colaborativo · Zooformes</h2>
+          <p class="panel-subtitle">1. Toca una pieza de abajo.<br>2. Toca su hueco en el tablero de la izquierda.</p>
+          <div style="display:flex; gap:10px; margin-bottom:14px; flex-wrap:wrap;">
+            <button class="btn-xl outline" onclick="setupPuzzle(2)">4 piezas (Fácil)</button>
+            <button class="btn-xl outline" onclick="setupPuzzle(3)">9 piezas (Medio)</button>
+            <button class="btn-xl secondary" onclick="nextZooforme()">🖼️ Otra obra</button>
+          </div>
+          <div id="puzzle-pieces" class="puzzle-pieces"></div>
+        </div>
+        <div class="feedback-box" id="puzzle-feedback">¡Reconstruid la figura entre todos!</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MÓDULO 6: LIENZO LÁSER -->
+  <section id="screen-laser" class="screen">
+    <div class="laser-layout">
+      <div class="artwork-stage">
+        <canvas id="laserCanvas" width="520" height="520"></canvas>
+      </div>
+      <div class="side-panel">
+        <div>
+          <h2 class="panel-title">✏️ Lienzo Blanco y Negro Puro</h2>
+          <p class="panel-subtitle">Dibuja con el dedo. El archivo se guarda en alto contraste listo para grabar en láser sobre goma EVA.</p>
+          <div style="display:flex; flex-direction:column; gap:12px;">
+            <button class="btn-xl outline" id="btn-sym" onclick="toggleSymmetry()">🦋 Simetría Espejo: ACTIVADA</button>
+            <button class="btn-xl outline" onclick="setBrush(14)">🖌️ Trazo Grueso</button>
+            <button class="btn-xl outline" onclick="setBrush(6)">🖊️ Trazo Fino</button>
+            <button class="btn-xl secondary" onclick="clearLaserCanvas()">🧹 Borrar Lienzo</button>
+          </div>
+        </div>
+        <button class="btn-xl success" onclick="downloadLaserPNG()">💾 Guardar Imagen para Láser</button>
+      </div>
+    </div>
+  </section>
+</main>
+
+ <script>
+  let audioCtx = null, soundEnabled = true;
+  function ensureAudio() {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+  }
+  function playTone(freq = 523.25, duration = 0.22, type = 'sine', delay = 0) {
+    if (!soundEnabled) return;
+    ensureAudio();
+    const osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
+    osc.type = type;
+    osc.frequency.setValueAtTime(freq, audioCtx.currentTime + delay);
+    gain.gain.setValueAtTime(0.18, audioCtx.currentTime + delay);
+    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + delay + duration);
+    osc.connect(gain); gain.connect(audioCtx.destination);
+    osc.start(audioCtx.currentTime + delay);
+    osc.stop(audioCtx.currentTime + delay + duration);
+  }
+  function playSuccessChord() {
+    playTone(523.25, 0.35, 'triangle', 0);
+    playTone(659.25, 0.35, 'triangle', 0.08);
+    playTone(783.99, 0.50, 'triangle', 0.16);
+  }
+  function toggleSound() {
+    soundEnabled = !soundEnabled;
+    document.getElementById('btnSound').textContent = soundEnabled ? '🔊 Sonido ON' : '🔇 Silencio';
+    if (soundEnabled) playTone(587.33, 0.2);
+  }
+  function openModule(name) {
+    playTone(440, 0.15);
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById('screen-' + name).classList.add('active');
+    if (name === 'laberinto') initMaze();
+    if (name === 'mujer') initMujerTags();
+    if (name === 'zooformes') setupPuzzle(2);
+    if (name === 'laser') initLaserCanvas();
+  }
+  function goHome() {
+    playTone(392, 0.15);
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById('screen-home').classList.add('active');
+  }
+  function toggleFullscreen() {
+    playTone(523.25, 0.15);
+    if (!document.fullscreenElement) document.documentElement.requestFullscreen().catch(() => {});
+    else document.exitFullscreen();
+  }
+  function toggleEffect(imgId, className) {
+    playTone(493.88, 0.18);
+    document.getElementById(imgId).classList.toggle(className);
+  }
+
+  /* MÓDULO 1: ANTIPÍN */
+  let votes =;
+  function voteAntipin(idx, msg) {
+    votes[idx]++;
+    document.getElementById('vote-' + idx).textContent = votes[idx];
+    document.querySelectorAll('#screen-antipin .choice-btn').forEach((b, i) => { if (i === idx) b.classList.add('selected'); });
+    document.getElementById('antipin-feedback').textContent = msg;
+    playSuccessChord();
+  }
+  function resetAntipin() {
+    votes =;
+    for (let i = 0; i < 4; i++) document.getElementById('vote-' + i).textContent = '0';
+    document.querySelectorAll('#screen-antipin .choice-btn').forEach(b => b.classList.remove('selected'));
+    document.getElementById('antipin-feedback').textContent = 'Votos reiniciados. ¡Observad de nuevo!';
+    playTone(349.23, 0.2);
+  }
+
+  /* MÓDULO 2: CAMINO DE LOS PINGÜINOS */
+  const mazeImg = new Image(); mazeImg.src = 'series/antipin/Antipin002.png';
+  let leftP = { x: 85, y: 430, done: false }, rightP = { x: 455, y: 430, done: false };
+  let activeTouches = {}, mazeCompleted = false;
+  function initMaze() {
+    leftP = { x: 85, y: 430, done: false }; rightP = { x: 455, y: 430, done: false }; mazeCompleted = false;
+    document.getElementById('maze-feedback').textContent = 'Lleva los dos pingüinos por los caminos azules hasta los ojos centrales.';
+    drawMaze();
+  }
+  function drawMaze() {
+    const c = document.getElementById('mazeCanvas'), ctx = c.getContext('2d');
+    ctx.clearRect(0, 0, c.width, c.height);
+    ctx.save(); ctx.globalAlpha = mazeCompleted ? 1.0 : 0.22; ctx.drawImage(mazeImg, 20, 20, 500, 500); ctx.restore();
+    if (!mazeCompleted) {
+      ctx.lineWidth = 28; ctx.lineCap = 'round'; ctx.strokeStyle = 'rgba(43, 108, 176, 0.35)';
+      ctx.beginPath(); ctx.moveTo(85, 430); ctx.quadraticCurveTo(60, 270, 215, 255); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(455, 430); ctx.quadraticCurveTo(480, 270, 325, 255); ctx.stroke();
+      ctx.fillStyle = leftP.done ? '#2f855a' : '#d69e2e'; ctx.beginPath(); ctx.arc(215, 255, 24, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = rightP.done ? '#2f855a' : '#d69e2e'; ctx.beginPath(); ctx.arc(325, 255, 24, 0, Math.PI * 2); ctx.fill();
+    }
+    ctx.font = '44px serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText('🐧', leftP.x, leftP.y); ctx.fillText('🐧', rightP.x, rightP.y);
+  }
+  const mazeCanvas = document.getElementById('mazeCanvas');
+  mazeCanvas.addEventListener('pointerdown', e => {
+    const rect = mazeCanvas.getBoundingClientRect();
+    const x = (e.clientX - rect.left) * (mazeCanvas.width / rect.width), y = (e.clientY - rect.top) * (mazeCanvas.height / rect.height);
+    if (Math.hypot(x - leftP.x, y - leftP.y) < 55) activeTouches[e.pointerId] = 'left';
+    else if (Math.hypot(x - rightP.x, y - rightP.y) < 55) activeTouches[e.pointerId] = 'right';
+  });
+  mazeCanvas.addEventListener('pointermove', e => {
+    const side = activeTouches[e.pointerId]; if (!side || mazeCompleted) return;
+    const rect = mazeCanvas.getBoundingClientRect();
+    const x = (e.clientX - rect.left) * (mazeCanvas.width / rect.width), y = (e.clientY - rect.top) * (mazeCanvas.height / rect.height);
+    if (side === 'left') {
+      leftP.x = x; leftP.y = y;
+      if (Math.hypot(x - 215, y - 255) < 40) { leftP.x = 215; leftP.y = 255; leftP.done = true; playTone(587.33, 0.15); }
+    } else {
+      rightP.x = x; rightP.y = y;
+      if (Math.hypot(x - 325, y - 255) < 40) { rightP.x = 325; rightP.y = 255; rightP.done = true; playTone(659.25, 0.15); }
+    }
+    if (leftP.done && rightP.done && !mazeCompleted) {
+      mazeCompleted = true;
+      document.getElementById('maze-feedback').textContent = '🎉 ¡LOGRADO! Al unir los dos pingüinos en los ojos aparece el antílope.';
+      playSuccessChord();
+    }
+    drawMaze();
+  });
+  mazeCanvas.addEventListener('pointerup', e => { delete activeTouches[e.pointerId]; });
+
+  /* MÓDULO 3: DIFERENCIAS */
+  const diffPairs = [
+    ['series/antipin/Antipin001.png', 'series/antipin/Antipin018.png'],
+    ['series/mujer_recostada/Mujerrecostada01.png', 'series/mujer_recostada/Mujerrecostada12.png'],
+    ['series/zooforme/zooforme01.png', 'series/zooforme/zooforme09.png']
+  ];
+  let currentPair = 0, diffCount = 0;
+  function markDiff(e) {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const xPct = ((e.clientX - rect.left) / rect.width) * 100, yPct = ((e.clientY - rect.top) / rect.height) * 100;
+    ['diff-left', 'diff-right'].forEach(id => {
+      const m = document.createElement('div'); m.className = 'diff-marker';
+      m.style.left = xPct + '%'; m.style.top = yPct + '%';
+      document.getElementById(id).appendChild(m);
+    });
+    diffCount++; document.getElementById('diff-counter').textContent = 'Marcadas: ' + diffCount;
+    playTone(659.25, 0.2);
+  }
+  function clearDiffMarkers() {
+    document.querySelectorAll('.diff-marker').forEach(m => m.remove());
+    diffCount = 0; document.getElementById('diff-counter').textContent = 'Marcadas: 0'; playTone(392, 0.15);
+  }
+  function changeDiffPair() {
+    currentPair = (currentPair + 1) % diffPairs.length;
+    document.getElementById('diff-img-1').src = diffPairs[currentPair][0];
+    document.getElementById('diff-img-2').src = diffPairs[currentPair][1];
+    clearDiffMarkers();
+  }
+
+  /* MÓDULO 4: MUJER RECOSTADA */
+  const mujerLabels = ['COLETERO EN EL PELO', 'CARA / CUELLO', 'HOMBRO', 'ESPALDA', 'CULO', 'CODO', 'MANO DE BRAZO DERECHO AGARRA MUÑECA DEL BRAZO IZQUIERDO'];
+  let selectedLabelText = null;
+  function initMujerTags() {
+    const pool = document.getElementById('tags-pool'); pool.innerHTML = '';
+    document.querySelectorAll('.placed-tag').forEach(t => t.remove()); selectedLabelText = null;
+    mujerLabels.forEach(text => {
+      const btn = document.createElement('button'); btn.className = 'drag-tag'; btn.textContent = text;
+      btn.onclick = () => {
+        selectedLabelText = text;
+        document.querySelectorAll('.drag-tag').forEach(b => b.style.outline = 'none');
+        btn.style.outline = '4px solid #2b6cb0';
+        document.getElementById('mujer-feedback').textContent = 'Ahora toca sobre la estampa dónde va: "' + text + '"';
+        playTone(523.25, 0.15);
+      };
+      pool.appendChild(btn);
+    });
+  }
+  document.getElementById('mujer-stage').addEventListener('pointerdown', e => {
+    if (!selectedLabelText || e.target.classList.contains('placed-tag')) return;
+    const stage = document.getElementById('mujer-stage'), rect = stage.getBoundingClientRect();
+    const tag = document.createElement('div'); tag.className = 'placed-tag'; tag.textContent = selectedLabelText;
+    tag.style.left = (e.clientX - rect.left - 60) + 'px'; tag.style.top = (e.clientY - rect.top - 20) + 'px';
+    tag.onpointerdown = ev => {
+      ev.stopPropagation();
+      const move = mv => { tag.style.left = (mv.clientX - rect.left - 60) + 'px'; tag.style.top = (mv.clientY - rect.top - 20) + 'px'; };
+      const up = () => { window.removeEventListener('pointermove', move); window.removeEventListener('pointerup', up); };
+      window.addEventListener('pointermove', move); window.addEventListener('pointerup', up);
+    };
+    stage.appendChild(tag); playSuccessChord();
+    document.getElementById('mujer-feedback').textContent = '¡Etiqueta colocada! Puedes arrastrarla para ajustarla o elegir otra.';
+    selectedLabelText = null; document.querySelectorAll('.drag-tag').forEach(b => b.style.outline = 'none');
+  });
+  function resetMujerTags() { initMujerTags(); document.getElementById('mujer-feedback').textContent = 'Etiquetas recogidas.'; playTone(392, 0.15); }
+
+    /* MÓDULO 5: PUZLES ZOOFORMES */
+  const zooList = ['series/zooforme/zooforme01.png', 'series/zooforme/zooforme02.png', 'series/zooforme/zooforme03.png', 'series/zooforme/zooforme04.png', 'series/zooforme/zooforme05.png'];
+  let zooIndex = 0, puzzleGridSize = 2, selectedPieceIdx = null, solvedCount = 0;
+  function nextZooforme() { zooIndex = (zooIndex + 1) % zooList.length; setupPuzzle(puzzleGridSize); }
+  function setupPuzzle(gridSize) {
+    puzzleGridSize = gridSize; selectedPieceIdx = null; solvedCount = 0;
+    const board = document.getElementById('puzzle-board'), tray = document.getElementById('puzzle-pieces');
+    board.innerHTML = ''; tray.innerHTML = '';
+    const tilePx = Math.floor(440 / gridSize);
+    board.style.gridTemplateColumns = `repeat(${gridSize}, ${tilePx}px)`;
+    board.style.gridTemplateRows = `repeat(${gridSize}, ${tilePx}px)`;
+    const img = new Image(); img.crossOrigin = 'anonymous'; img.src = zooList[zooIndex];
+    img.onload = () => {
+      const pieces = [];
+      for (let r = 0; r < gridSize; r++) {
+        for (let c = 0; c < gridSize; c++) {
+          const idx = r * gridSize + c;
+          const slot = document.createElement('div'); slot.className = 'puzzle-slot';
+          slot.style.width = tilePx + 'px'; slot.style.height = tilePx + 'px'; slot.dataset.idx = idx;
+          slot.onclick = () => placePuzzlePiece(slot); board.appendChild(slot);
+          const pc = document.createElement('canvas'); pc.width = tilePx; pc.height = tilePx; pc.className = 'puzzle-piece';
+          pc.style.width = Math.min(115, tilePx) + 'px'; pc.style.height = Math.min(115, tilePx) + 'px'; pc.dataset.idx = idx;
+          pc.getContext('2d').drawImage(img, c * (img.width / gridSize), r * (img.height / gridSize), img.width / gridSize, img.height / gridSize, 0, 0, tilePx, tilePx);
+          pc.onclick = () => {
+            document.querySelectorAll('.puzzle-piece').forEach(el => el.classList.remove('selected-piece'));
+            pc.classList.add('selected-piece'); selectedPieceIdx = idx; playTone(523.25, 0.12);
+          };
+          pieces.push(pc);
+        }
+      }
+      pieces.sort(() => Math.random() - 0.5).forEach(p => tray.appendChild(p));
+    };
+  }
+  function placePuzzlePiece(slot) {
+    if (selectedPieceIdx === null) return;
+    if (parseInt(slot.dataset.idx) === selectedPieceIdx && slot.children.length === 0) {
+      const piece = document.querySelector(`.puzzle-piece[data-idx="${selectedPieceIdx}"]`);
+      piece.classList.remove('selected-piece'); piece.style.width = '100%'; piece.style.height = '100%'; piece.style.border = 'none';
+      slot.appendChild(piece); selectedPieceIdx = null; solvedCount++; playTone(659.25, 0.2);
+      if (solvedCount === puzzleGridSize * puzzleGridSize) {
+        document.getElementById('puzzle-feedback').textContent = '🎉 ¡PUZLE COMPLETADO! ¡Gran trabajo en equipo!'; playSuccessChord();
+      }
+    } else {
+      playTone(220, 0.18, 'sawtooth');
+      document.getElementById('puzzle-feedback').textContent = 'Esa pieza va en otro hueco. ¡Probad otra posición!';
+    }
+  }
+
+  /* MÓDULO 6: LIENZO LÁSER */
+  let laserDrawing = false, laserSymmetry = true, brushSize = 14, lastLX = 0, lastLY = 0;
+  function initLaserCanvas() {
+    const c = document.getElementById('laserCanvas'), ctx = c.getContext('2d');
+    if (!c.dataset.ready) { ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, c.width, c.height); c.dataset.ready = '1'; }
+  }
+  function clearLaserCanvas() {
+    const c = document.getElementById('laserCanvas'); c.getContext('2d').fillStyle = '#ffffff';
+    c.getContext('2d').fillRect(0, 0, c.width, c.height); playTone(392, 0.15);
+  }
+  function toggleSymmetry() {
+    laserSymmetry = !laserSymmetry;
+    document.getElementById('btn-sym').textContent = laserSymmetry ? '🦋 Simetría Espejo: ACTIVADA' : '✏️ Simetría Espejo: DESACTIVADA';
+    playTone(523.25, 0.15);
+  }
+  function setBrush(sz) { brushSize = sz; playTone(587.33, 0.12); }
+  const lCanvas = document.getElementById('laserCanvas');
+  lCanvas.addEventListener('pointerdown', e => {
+    laserDrawing = true; const rect = lCanvas.getBoundingClientRect();
+    lastLX = (e.clientX - rect.left) * (lCanvas.width / rect.width); lastLY = (e.clientY - rect.top) * (lCanvas.height / rect.height);
+  });
+  lCanvas.addEventListener('pointermove', e => {
+    if (!laserDrawing) return;
+    const rect = lCanvas.getBoundingClientRect();
+    const x = (e.clientX - rect.left) * (lCanvas.width / rect.width), y = (e.clientY - rect.top) * (lCanvas.height / rect.height);
+    const ctx = lCanvas.getContext('2d'); ctx.strokeStyle = '#000000'; ctx.lineWidth = brushSize; ctx.lineCap = 'round';
+    ctx.beginPath(); ctx.moveTo(lastLX, lastLY); ctx.lineTo(x, y); ctx.stroke();
+    if (laserSymmetry) { ctx.beginPath(); ctx.moveTo(lCanvas.width - lastLX, lastLY); ctx.lineTo(lCanvas.width - x, y); ctx.stroke(); }
+    lastLX = x; lastLY = y;
+  });
+  window.addEventListener('pointerup', () => { laserDrawing = false; });
+  function downloadLaserPNG() {
+    playSuccessChord(); const link = document.createElement('a');
+    link.download = 'matriz_goma_eva_taller.png'; link.href = document.getElementById('laserCanvas').toDataURL('image/png'); link.click();
+  }
+</script>
+</body>
+</html>
