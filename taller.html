@@ -385,6 +385,31 @@
 </style>
 </head>
 <body>
+  <!-- PANTALLA DE BLOQUEO POR PIN -->
+<div id="pin-lock" style="position:fixed; inset:0; background:#1a365d; z-index:9999; display:flex; align-items:center; justify-content:center; padding:20px;">
+  <div style="background:#fff; border-radius:24px; max-width:420px; width:100%; padding:28px; text-align:center; box-shadow:0 12px 30px rgba(0,0,0,0.4);">
+    <div style="font-size:3rem; margin-bottom:8px;">🔒</div>
+    <h2 class="panel-title" style="margin-bottom:6px;">Acceso Taller APAFAM</h2>
+    <p class="panel-subtitle" style="margin-bottom:16px;">Introduce el código PIN de 4 dígitos</p>
+    <input id="pin-input" type="password" maxlength="4" readonly placeholder="••••" style="width:180px; font-size:2rem; text-align:center; letter-spacing:10px; padding:10px; border:3px solid #cbd5e0; border-radius:14px; margin-bottom:16px;">
+    <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:10px; max-width:280px; margin:0 auto;">
+      <button class="btn-xl outline" onclick="teclaPIN('1')">1</button>
+      <button class="btn-xl outline" onclick="teclaPIN('2')">2</button>
+      <button class="btn-xl outline" onclick="teclaPIN('3')">3</button>
+      <button class="btn-xl outline" onclick="teclaPIN('4')">4</button>
+      <button class="btn-xl outline" onclick="teclaPIN('5')">5</button>
+      <button class="btn-xl outline" onclick="teclaPIN('6')">6</button>
+      <button class="btn-xl outline" onclick="teclaPIN('7')">7</button>
+      <button class="btn-xl outline" onclick="teclaPIN('8')">8</button>
+      <button class="btn-xl outline" onclick="teclaPIN('9')">9</button>
+      <button class="btn-xl secondary" onclick="borrarPIN()">⌫</button>
+      <button class="btn-xl outline" onclick="teclaPIN('0')">0</button>
+      <button class="btn-xl success" onclick="comprobarPIN()">OK</button>
+    </div>
+    <p id="pin-msg" style="color:#c53030; font-weight:700; margin-top:12px; min-height:24px;"></p>
+  </div>
+</div>
+
   <header>
   <h1>🎨 Taller Plástico y Gestáltico · Árbol Hiperbólico</h1>
   <div class="top-controls">
@@ -652,13 +677,29 @@
     osc.stop(audioCtx.currentTime + delay + duration);
   }
     /* ================= PUENTE AUTOMÁTICO CON REGISTRO PAI APAFAM ================= */
-  const USUARIOS_APAFAM = [
-    "Lara", "Alan", "Elizabeth", "Laura", "Gemma", "Celia",
-    "MartaSP", "Nazaret", "Pilar", "Benito", "Angel Luis", "Alex",
-    "Lorena", "Bianca", "Paquito", "Aroa", "GemaS", "Diana",
-    "Luis Miguel", "Mari Sol", "Gabriela", "Paloma", "Waffa", "Ane",
-    "Anne", "Ana", "Gonzalo", "Rosa", "Maria"
-  ];
+    const PIN_TALLER = "1965";
+  function teclaPIN(num) {
+    const inp = document.getElementById('pin-input');
+    if (inp.value.length < 4) inp.value += num;
+  }
+  function borrarPIN() {
+    document.getElementById('pin-input').value = '';
+    document.getElementById('pin-msg').textContent = '';
+  }
+  function comprobarPIN() {
+    const inp = document.getElementById('pin-input');
+    if (inp.value === PIN_TALLER) {
+      document.getElementById('pin-lock').style.display = 'none';
+      playSuccessChord();
+    } else {
+      document.getElementById('pin-msg').textContent = 'PIN incorrecto';
+      inp.value = '';
+      playTone(220, 0.2, 'sawtooth');
+    }
+  }
+
+  const USUARIOS_APAFAM = Array.from({ length: 30 }, (_, i) => `Participante ${i + 1}`);
+
   let registrosAPAFAM = [];
   let ultimoResultado = { actividad: "", obs: "", une: "3 - Progreso Adecuado / En avance" };
 
