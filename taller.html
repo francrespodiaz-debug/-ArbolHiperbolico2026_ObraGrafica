@@ -487,27 +487,29 @@
     </div>
   </section>
 
-  <!-- MÓDULO 3: ENCUENTRA LAS DIFERENCIAS -->
+   <!-- MÓDULO 3: ENCUENTRA LAS DIFERENCIAS -->
   <section id="screen-diferencias" class="screen">
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-      <h2 class="panel-title" style="margin:0;">🔍 Encuentra las diferencias de talla entre ambas estampas</h2>
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-wrap:wrap; gap:10px;">
+      <h2 class="panel-title" style="margin:0;">🔍 Encuentra las 4 diferencias entre ambas estampas</h2>
       <div style="display:flex; gap:12px; align-items:center;">
-        <span id="diff-counter" style="font-size:1.3rem; font-weight:800; color:var(--success);">Marcadas: 0</span>
-        <button class="btn-xl outline" onclick="changeDiffPair()">🖼️ Cambiar pareja</button>
-        <button class="btn-xl secondary" onclick="clearDiffMarkers()">🧹 Borrar marcas</button>
+        <span id="diff-counter" style="font-size:1.35rem; font-weight:800; color:var(--success); background:#c6f6d5; padding:8px 16px; border-radius:12px;">Encontradas: 0 / 4</span>
+        <button class="btn-xl outline" onclick="nextDiffBoard()">🖼️ Otra estampa</button>
+        <button class="btn-xl secondary" onclick="initDiffGame()">🔄 Reiniciar</button>
       </div>
     </div>
-    <div class="diff-grid">
-      <div class="diff-card" id="diff-left" onclick="markDiff(event)">
-        <strong style="font-size:1.15rem; margin-bottom:6px;">Estampa Inicial (Más tinta)</strong>
-        <img id="diff-img-1" src="series/antipin/Antipin001.png" alt="Inicial">
+    <div class="feedback-box" id="diff-feedback" style="margin-bottom:12px; min-height:52px;">Toca sobre las 4 zonas que han cambiado entre la estampa original y la modificada.</div>
+    <div class="diff-grid" style="height:calc(100% - 135px);">
+      <div class="diff-card" id="diff-left" onclick="checkDiffClick(event, 'diff-canvas-1')">
+        <strong style="font-size:1.15rem; margin-bottom:6px;">Estampa Original</strong>
+        <canvas id="diff-canvas-1" width="460" height="460" style="max-width:100%; max-height:88%; object-fit:contain;"></canvas>
       </div>
-      <div class="diff-card" id="diff-right" onclick="markDiff(event)">
-        <strong style="font-size:1.15rem; margin-bottom:6px;">Estampa Desgastada (Más talla)</strong>
-        <img id="diff-img-2" src="series/antipin/Antipin018.png" alt="Desgastada">
+      <div class="diff-card" id="diff-right" onclick="checkDiffClick(event, 'diff-canvas-2')">
+        <strong style="font-size:1.15rem; margin-bottom:6px;">Estampa Modificada (4 cambios)</strong>
+        <canvas id="diff-canvas-2" width="460" height="460" style="max-width:100%; max-height:88%; object-fit:contain;"></canvas>
       </div>
     </div>
   </section>
+
 
   <!-- MÓDULO 4: MUJER RECOSTADA (7 ETIQUETAS + MATRIZ) -->
   <section id="screen-mujer" class="screen">
@@ -621,7 +623,8 @@
     playTone(440, 0.15);
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     document.getElementById('screen-' + name).classList.add('active');
-    if (name === 'laberinto') initMaze();
+    if (name === 'laberinto') initMaze();    if (name === 'diferencias') initDiffGame();
+
     if (name === 'mujer') initMujerTags();
     if (name === 'zooformes') setupPuzzle(2);
     if (name === 'laser') initLaserCanvas();
@@ -830,34 +833,118 @@
   mazeCanvas.addEventListener('pointerup', e => { delete activeTouches[e.pointerId]; });
 
 
-  /* MÓDULO 3: DIFERENCIAS CON MAYOR CONTRASTE VISUAL (01 vs FINAL DE SERIE) */
-  const diffPairs = [
-    ['series/mujer_recostada/Mujerrecostada01.png', 'series/mujer_recostada/Mujerrecostada14.png'],
-    ['series/zooforme/zooforme01.png', 'series/zooforme/zooforme10.png'],
-    ['series/antipin/Antipin001.png', 'series/antipin/Antipin020.png']
+   /* MÓDULO 3: JUEGO REAL DE 4 DIFERENCIAS (ACIERTOS Y FALLOS) */
+  const diffBoards = [
+    {
+      src: 'series/antipin/Antipin002.png',
+      spots: [
+        { x: 185, y: 120, r: 22, color: '#ffffff', found: false },
+        { x: 315, y: 220, r: 16, color: '#000000', found: false },
+        { x: 115, y: 340, r: 24, color: '#000000', found: false },
+        { x: 230, y: 390, r: 22, color: '#ffffff', found: false }
+      ]
+    },
+    {
+      src: 'series/mujer_recostada/Mujerrecostada01.png',
+      spots: [
+        { x: 75, y: 80, r: 18, color: '#000000', found: false },
+        { x: 175, y: 205, r: 24, color: '#000000', found: false },
+        { x: 375, y: 290, r: 24, color: '#000000', found: false },
+        { x: 95, y: 295, r: 22, color: '#000000', found: false }
+      ]
+    },
+    {
+      src: 'series/zooforme/zooforme01.png',
+      spots: [
+        { x: 150, y: 140, r: 24, color: '#000000', found: false },
+        { x: 310, y: 160, r: 24, color: '#ffffff', found: false },
+        { x: 220, y: 270, r: 26, color: '#000000', found: false },
+        { x: 160, y: 360, r: 24, color: '#ffffff', found: false }
+      ]
+    }
   ];
-  let currentPair = 0, diffCount = 0;
-  function markDiff(e) {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const xPct = ((e.clientX - rect.left) / rect.width) * 100, yPct = ((e.clientY - rect.top) / rect.height) * 100;
-    ['diff-left', 'diff-right'].forEach(id => {
-      const m = document.createElement('div'); m.className = 'diff-marker';
-      m.style.left = xPct + '%'; m.style.top = yPct + '%';
-      document.getElementById(id).appendChild(m);
+  let currentDiffIdx = 0;
+  let diffFoundCount = 0;
+
+  function nextDiffBoard() {
+    currentDiffIdx = (currentDiffIdx + 1) % diffBoards.length;
+    playTone(523.25, 0.15);
+    initDiffGame();
+  }
+
+  function initDiffGame() {
+    const board = diffBoards[currentDiffIdx];
+    board.spots.forEach(s => s.found = false);
+    diffFoundCount = 0;
+    document.getElementById('diff-counter').textContent = 'Encontradas: 0 / 4';
+    document.getElementById('diff-feedback').textContent = 'Toca sobre las 4 zonas diferentes entre ambas imágenes.';
+    drawDiffCanvases();
+  }
+
+  function drawDiffCanvases() {
+    const board = diffBoards[currentDiffIdx];
+    const img = new Image();
+    img.src = board.src;
+    img.onload = () => {
+      const c1 = document.getElementById('diff-canvas-1'), ctx1 = c1.getContext('2d');
+      const c2 = document.getElementById('diff-canvas-2'), ctx2 = c2.getContext('2d');
+      ctx1.clearRect(0, 0, 460, 460);
+      ctx2.clearRect(0, 0, 460, 460);
+      ctx1.drawImage(img, 10, 10, 440, 440);
+      ctx2.drawImage(img, 10, 10, 440, 440);
+
+      board.spots.forEach(s => {
+        ctx2.fillStyle = s.color;
+        ctx2.beginPath();
+        ctx2.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+        ctx2.fill();
+
+        if (s.found) {
+          [ctx1, ctx2].forEach(ctx => {
+            ctx.strokeStyle = '#2f855a';
+            ctx.lineWidth = 6;
+            ctx.beginPath();
+            ctx.arc(s.x, s.y, s.r + 10, 0, Math.PI * 2);
+            ctx.stroke();
+          });
+        }
+      });
+    };
+  }
+
+  function checkDiffClick(e, canvasId) {
+    if (diffFoundCount >= 4) return;
+    const canvas = document.getElementById(canvasId);
+    const rect = canvas.getBoundingClientRect();
+    const x = (e.clientX - rect.left) * (460 / rect.width);
+    const y = (e.clientY - rect.top) * (460 / rect.height);
+    const board = diffBoards[currentDiffIdx];
+
+    let hit = false;
+    board.spots.forEach(s => {
+      if (!s.found && Math.hypot(x - s.x, y - s.y) <= s.r + 22) {
+        s.found = true;
+        hit = true;
+        diffFoundCount++;
+      }
     });
-    diffCount++; document.getElementById('diff-counter').textContent = 'Marcadas: ' + diffCount;
-    playTone(659.25, 0.2);
+
+    if (hit) {
+      document.getElementById('diff-counter').textContent = 'Encontradas: ' + diffFoundCount + ' / 4';
+      drawDiffCanvases();
+      if (diffFoundCount === 4) {
+        document.getElementById('diff-feedback').textContent = '🎉 ¡ENHORABUENA! Habéis encontrado las 4 diferencias.';
+        playSuccessChord();
+      } else {
+        document.getElementById('diff-feedback').textContent = '✅ ¡Acierto! Lleváis ' + diffFoundCount + ' de 4 diferencias.';
+        playTone(659.25, 0.22);
+      }
+    } else {
+      playTone(220, 0.2, 'sawtooth');
+      document.getElementById('diff-feedback').textContent = '❌ Aquí son iguales. ¡Fijaos bien en los detalles blancos y negros!';
+    }
   }
-  function clearDiffMarkers() {
-    document.querySelectorAll('.diff-marker').forEach(m => m.remove());
-    diffCount = 0; document.getElementById('diff-counter').textContent = 'Marcadas: 0'; playTone(392, 0.15);
-  }
-  function changeDiffPair() {
-    currentPair = (currentPair + 1) % diffPairs.length;
-    document.getElementById('diff-img-1').src = diffPairs[currentPair][0];
-    document.getElementById('diff-img-2').src = diffPairs[currentPair][1];
-    clearDiffMarkers();
-  }
+
 
   /* MÓDULO 4: MUJER RECOSTADA (COORDENADAS CORREGIDAS EN ZONA BLANCA) */
   const mujerZones = [
