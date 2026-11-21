@@ -476,9 +476,13 @@
           </p>
           <div class="feedback-box" id="maze-feedback">Arrastra los dos pingüinos hacia el centro para descubrir el antílope.</div>
         </div>
-        <div style="display:flex; gap:12px;">
-          <button class="btn-xl success" onclick="initMaze()">🔄 Volver a empezar</button>
+               <div style="display:flex; gap:10px; flex-wrap:wrap;">
+          <button class="btn-xl outline" onclick="setMazeLevel(0)">🟢 Nivel 1 (Fácil)</button>
+          <button class="btn-xl outline" onclick="setMazeLevel(1)">🟡 Nivel 2 (Medio)</button>
+          <button class="btn-xl outline" onclick="setMazeLevel(2)">🔴 Nivel 3 (Reto)</button>
+          <button class="btn-xl success" onclick="initMaze()">🔄 Reiniciar</button>
         </div>
+
       </div>
     </div>
   </section>
@@ -644,101 +648,175 @@
   }
 
  
-     /* MÓDULO 2: CAMINO DE LOS PINGÜINOS (LABERINTO SERPENTINA CON CONTROL DE TRAZO) */
+     /* MÓDULO 2: LABERINTO REAL CON BIFURCACIONES Y 3 NIVELES */
   const mazeImg = new Image(); mazeImg.src = 'series/antipin/Antipin002.png';
-  const leftWaypoints = [
-    {x: 80, y: 490}, {x: 150, y: 450}, {x: 65, y: 395}, {x: 155, y: 340},
-    {x: 70, y: 285}, {x: 145, y: 235}, {x: 215, y: 255}
+  const mazeLevels = [
+    // NIVEL 1 (9x9 - Fácil)
+    [
+      "#########",
+      "#...#...#",
+      "#.#.#.#.#",
+      "#.#...#.#",
+      "#.###G#.#",
+      "#...#...#",
+      "#.#.###.#",
+      "#.......#",
+      "#########"
+    ],
+    // NIVEL 2 (11x11 - Medio)
+    [
+      "###########",
+      "#....#....#",
+      "#.##.#.##.#",
+      "#.#.....#.#",
+      "#.#.###.#.#",
+      "#...#G#...#",
+      "###.#.#.###",
+      "#...#.#...#",
+      "#.#.###.#.#",
+      "#.........#",
+      "###########"
+    ],
+    // NIVEL 3 (13x13 - Reto)
+    [
+      "#############",
+      "#.....#.....#",
+      "#.###.#.###.#",
+      "#.#...#...#.#",
+      "#.#.#####.#.#",
+      "#...#...#...#",
+      "###.#.G.#.###",
+      "#...#...#...#",
+      "#.#.#####.#.#",
+      "#.#...#...#.#",
+      "#.###.#.###.#",
+      "#...........#",
+      "#############"
+    ]
   ];
-  const rightWaypoints = [
-    {x: 460, y: 490}, {x: 390, y: 450}, {x: 475, y: 395}, {x: 385, y: 340},
-    {x: 470, y: 285}, {x: 395, y: 235}, {x: 325, y: 255}
-  ];
-  let leftP = { x: 80, y: 490, done: false };
-  let rightP = { x: 460, y: 490, done: false };
+
+  let currentMazeLvl = 0;
+  let leftP = { x: 0, y: 0, done: false };
+  let rightP = { x: 0, y: 0, done: false };
+  let goalPos = { x: 0, y: 0 };
   let activeTouches = {}, mazeCompleted = false;
 
+  function setMazeLevel(lvl) {
+    currentMazeLvl = lvl;
+    playTone(523.25, 0.15);
+    initMaze();
+  }
+
   function initMaze() {
-    leftP = { x: 80, y: 490, done: false };
-    rightP = { x: 460, y: 490, done: false };
-    activeTouches = {}; mazeCompleted = false;
-    document.getElementById('maze-feedback').textContent = 'Sigue todo el camino en zig-zag con cada pingüino sin salirte de la línea azul.';
+    const grid = mazeLevels[currentMazeLvl];
+    const rows = grid.length, cols = grid[0].length;
+    const c = document.getElementById('mazeCanvas');
+    const cellW = c.width / cols, cellH = c.height / rows;
+
+    leftP = { x: cellW * 1.5, y: cellH * (rows - 1.5), done: false };
+    rightP = { x: cellW * (cols - 1.5), y: cellH * (rows - 1.5), done: false };
+    mazeCompleted = false;
+    activeTouches = {};
+
+    for (let r = 0; r < rows; r++) {
+      for (let col = 0; col < cols; col++) {
+        if (grid[r][col] === 'G') {
+          goalPos = { x: cellW * (col + 0.5), y: cellH * (r + 0.5) };
+        }
+      }
+    }
+    document.getElementById('maze-feedback').textContent = 'Nivel ' + (currentMazeLvl + 1) + ': Lleva ambos pingüinos desde las esquinas hasta el antílope del centro.';
     drawMaze();
   }
 
-  function distToSegment(px, py, x1, y1, x2, y2) {
-    const l2 = (x2 - x1) ** 2 + (y2 - y1) ** 2;
-    let t = ((px - x1) * (x2 - x1) + (py - y1) * (y2 - y1)) / l2;
-    t = Math.max(0, Math.min(1, t));
-    return Math.hypot(px - (x1 + t * (x2 - x1)), py - (y1 + t * (y2 - y1)));
-  }
-
-  function isOnPath(px, py, pts) {
-    for (let i = 0; i < pts.length - 1; i++) {
-      if (distToSegment(px, py, pts[i].x, pts[i].y, pts[i+1].x, pts[i+1].y) <= 28) return true;
-    }
-    return false;
-  }
-
-  function drawPathLine(ctx, pts, color) {
-    ctx.lineWidth = 34; ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.strokeStyle = color;
-    ctx.beginPath(); ctx.moveTo(pts[0].x, pts[0].y);
-    for (let i = 1; i < pts.length; i++) ctx.lineTo(pts[i].x, pts[i].y);
-    ctx.stroke();
+  function canMoveTo(nx, ny) {
+    const grid = mazeLevels[currentMazeLvl];
+    const rows = grid.length, cols = grid[0].length;
+    const c = document.getElementById('mazeCanvas');
+    const cellW = c.width / cols, cellH = c.height / rows;
+    const col = Math.floor(nx / cellW), row = Math.floor(ny / cellH);
+    if (row < 0 || row >= rows || col < 0 || col >= cols) return false;
+    return grid[row][col] !== '#';
   }
 
   function drawMaze() {
     const c = document.getElementById('mazeCanvas'), ctx = c.getContext('2d');
     ctx.clearRect(0, 0, c.width, c.height);
-    ctx.save(); ctx.globalAlpha = mazeCompleted ? 1.0 : 0.20; ctx.drawImage(mazeImg, 20, 20, 500, 500); ctx.restore();
-    if (!mazeCompleted) {
-      drawPathLine(ctx, leftWaypoints, 'rgba(43, 108, 176, 0.35)');
-      drawPathLine(ctx, rightWaypoints, 'rgba(43, 108, 176, 0.35)');
-      ctx.fillStyle = leftP.done ? '#2f855a' : '#d69e2e'; ctx.beginPath(); ctx.arc(215, 255, 22, 0, Math.PI * 2); ctx.fill();
-      ctx.fillStyle = rightP.done ? '#2f855a' : '#d69e2e'; ctx.beginPath(); ctx.arc(325, 255, 22, 0, Math.PI * 2); ctx.fill();
+
+    if (mazeCompleted) {
+      ctx.drawImage(mazeImg, 15, 15, c.width - 30, c.height - 30);
+      return;
     }
-    ctx.font = '42px serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-    ctx.fillText('🐧', leftP.x, leftP.y); ctx.fillText('🐧', rightP.x, rightP.y);
+
+    const grid = mazeLevels[currentMazeLvl];
+    const rows = grid.length, cols = grid[0].length;
+    const cellW = c.width / cols, cellH = c.height / rows;
+
+    ctx.save(); ctx.globalAlpha = 0.08; ctx.drawImage(mazeImg, 20, 20, c.width - 40, c.height - 40); ctx.restore();
+
+    for (let r = 0; r < rows; r++) {
+      for (let col = 0; col < cols; col++) {
+        const ch = grid[r][col];
+        if (ch === '#') {
+          ctx.fillStyle = '#1a202c';
+          ctx.fillRect(col * cellW, r * cellH, cellW + 0.6, cellH + 0.6);
+        } else if (ch === 'G') {
+          ctx.fillStyle = '#fefcbf';
+          ctx.beginPath(); ctx.arc(goalPos.x, goalPos.y, cellW * 0.45, 0, Math.PI * 2); ctx.fill();
+          ctx.strokeStyle = '#d69e2e'; ctx.lineWidth = 3; ctx.stroke();
+          ctx.font = Math.floor(cellW * 0.62) + 'px serif';
+          ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+          ctx.fillText('🦌', goalPos.x, goalPos.y);
+        }
+      }
+    }
+
+    const pSize = Math.floor(cellW * 0.58);
+    ctx.font = pSize + 'px serif';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText('🐧', leftP.x, leftP.y);
+    ctx.fillText('🐧', rightP.x, rightP.y);
   }
 
   const mazeCanvas = document.getElementById('mazeCanvas');
   mazeCanvas.addEventListener('pointerdown', e => {
     const rect = mazeCanvas.getBoundingClientRect();
-    const x = (e.clientX - rect.left) * (mazeCanvas.width / rect.width), y = (e.clientY - rect.top) * (mazeCanvas.height / rect.height);
-    if (!leftP.done && Math.hypot(x - leftP.x, y - leftP.y) < 55) activeTouches[e.pointerId] = 'left';
-    else if (!rightP.done && Math.hypot(x - rightP.x, y - rightP.y) < 55) activeTouches[e.pointerId] = 'right';
+    const x = (e.clientX - rect.left) * (mazeCanvas.width / rect.width);
+    const y = (e.clientY - rect.top) * (mazeCanvas.height / rect.height);
+    if (!leftP.done && Math.hypot(x - leftP.x, y - leftP.y) < 42) activeTouches[e.pointerId] = 'left';
+    else if (!rightP.done && Math.hypot(x - rightP.x, y - rightP.y) < 42) activeTouches[e.pointerId] = 'right';
   });
 
   mazeCanvas.addEventListener('pointermove', e => {
     const side = activeTouches[e.pointerId]; if (!side || mazeCompleted) return;
     const rect = mazeCanvas.getBoundingClientRect();
-    const x = (e.clientX - rect.left) * (mazeCanvas.width / rect.width), y = (e.clientY - rect.top) * (mazeCanvas.height / rect.height);
+    const tx = (e.clientX - rect.left) * (mazeCanvas.width / rect.width);
+    const ty = (e.clientY - rect.top) * (mazeCanvas.height / rect.height);
+    const p = side === 'left' ? leftP : rightP;
 
-    if (side === 'left') {
-      if (!isOnPath(x, y, leftWaypoints)) {
-        delete activeTouches[e.pointerId]; leftP = { x: 80, y: 490, done: false };
-        playTone(220, 0.2, 'sawtooth'); document.getElementById('maze-feedback').textContent = '¡Ups! El pingüino izquierdo se salió del camino. ¡Inténtalo despacio!';
-      } else {
-        leftP.x = x; leftP.y = y;
-        if (Math.hypot(x - 215, y - 255) < 35) { leftP.x = 215; leftP.y = 255; leftP.done = true; delete activeTouches[e.pointerId]; playTone(587.33, 0.18); }
-      }
-    } else {
-      if (!isOnPath(x, y, rightWaypoints)) {
-        delete activeTouches[e.pointerId]; rightP = { x: 460, y: 490, done: false };
-        playTone(220, 0.2, 'sawtooth'); document.getElementById('maze-feedback').textContent = '¡Ups! El pingüino derecho se salió del camino. ¡Inténtalo despacio!';
-      } else {
-        rightP.x = x; rightP.y = y;
-        if (Math.hypot(x - 325, y - 255) < 35) { rightP.x = 325; rightP.y = 255; rightP.done = true; delete activeTouches[e.pointerId]; playTone(659.25, 0.18); }
-      }
+    const steps = 6;
+    const dx = (tx - p.x) / steps, dy = (ty - p.y) / steps;
+    for (let s = 0; s < steps; s++) {
+      if (canMoveTo(p.x + dx, p.y)) p.x += dx;
+      if (canMoveTo(p.x, p.y + dy)) p.y += dy;
     }
+
+    if (Math.hypot(p.x - goalPos.x, p.y - goalPos.y) < 26) {
+      p.x = goalPos.x; p.y = goalPos.y; p.done = true;
+      delete activeTouches[e.pointerId];
+      playTone(659.25, 0.2);
+      document.getElementById('maze-feedback').textContent = '✅ ¡Un pingüino ya llegó al antílope! Falta el otro compañero.';
+    }
+
     if (leftP.done && rightP.done && !mazeCompleted) {
       mazeCompleted = true;
-      document.getElementById('maze-feedback').textContent = '🎉 ¡EXCELENTE PULSO! Al llegar ambos a los ojos aparece el antílope.';
+      document.getElementById('maze-feedback').textContent = '🎉 ¡LABERINTO COMPLETADO! Los dos pingüinos han reconstruido el antílope.';
       playSuccessChord();
     }
     drawMaze();
   });
   mazeCanvas.addEventListener('pointerup', e => { delete activeTouches[e.pointerId]; });
+
 
   /* MÓDULO 3: DIFERENCIAS CON MAYOR CONTRASTE VISUAL (01 vs FINAL DE SERIE) */
   const diffPairs = [
