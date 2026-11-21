@@ -385,6 +385,16 @@
 </style>
 </head>
 <body>
+  <header>
+  <h1>🎨 Taller Plástico y Gestáltico · Árbol Hiperbólico</h1>
+  <div class="top-controls">
+    <button class="btn-top" style="background:#2f855a; border-color:#fff;" id="btnExportCSV" onclick="descargarSesionAPAFAM()">📥 Exportar APAFAM (0)</button>
+    <button class="btn-top" id="btnSound" onclick="toggleSound()">🔊 Sonido ON</button>
+    <button class="btn-top" onclick="toggleFullscreen()">⛶ Pantalla Completa</button>
+    <button class="btn-top active-home" onclick="goHome()">🏠 Inicio</button>
+  </div>
+</header>
+
 <main>
   <!-- PANTALLA 0: MENÚ PRINCIPAL -->
   <section id="screen-home" class="screen active">
@@ -586,6 +596,42 @@
     </div>
   </section>
 </main>
+<!-- MODAL REGISTRO APAFAM -->
+<div id="modal-apafam" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.75); z-index:999; align-items:center; justify-content:center; padding:20px;">
+  <div style="background:#fff; border-radius:24px; max-width:860px; width:100%; max-height:92vh; overflow-y:auto; padding:24px; border:4px solid #1a365d;">
+    <h2 class="panel-title">📋 Guardar Resultado en Registro APAFAM</h2>
+    <p id="apafam-resumen" class="feedback-box" style="margin-bottom:14px;"></p>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:14px;">
+      <div>
+        <strong style="font-size:1.1rem;">1. Ubicación:</strong>
+        <select id="apafam-ubicacion" style="width:100%; padding:12px; font-size:1.15rem; border-radius:12px; border:2px solid #cbd5e0; margin-top:6px;">
+          <option value="Buitrago">Buitrago</option>
+          <option value="Torrelaguna">Torrelaguna</option>
+          <option value="Lozoyuela">Lozoyuela</option>
+        </select>
+      </div>
+      <div>
+        <strong style="font-size:1.1rem;">2. Tipo de Apoyo:</strong>
+        <select id="apafam-apoyo" style="width:100%; padding:12px; font-size:1.15rem; border-radius:12px; border:2px solid #cbd5e0; margin-top:6px;">
+          <option value="Sin apoyo / Autónomo">Sin apoyo / Autónomo</option>
+          <option value="Apoyo Verbal">Apoyo Verbal</option>
+          <option value="Apoyo Gestual / Visual">Apoyo Gestual / Visual</option>
+          <option value="Modelado">Modelado</option>
+          <option value="Apoyo Físico Parcial">Apoyo Físico Parcial</option>
+          <option value="Apoyo Físico Total">Apoyo Físico Total</option>
+        </select>
+      </div>
+    </div>
+
+    <strong style="font-size:1.1rem;">3. Toca el nombre del participante:</strong>
+    <div id="apafam-users-grid" style="display:grid; grid-template-columns:repeat(4, 1fr); gap:8px; margin:10px 0 18px 0;"></div>
+
+    <div style="display:flex; justify-content:flex-end; gap:12px;">
+      <button class="btn-xl secondary" onclick="cerrarModalAPAFAM()">Cancelar</button>
+    </div>
+  </div>
+</div>
 
  <script>
   let audioCtx = null, soundEnabled = true;
@@ -605,16 +651,143 @@
     osc.start(audioCtx.currentTime + delay);
     osc.stop(audioCtx.currentTime + delay + duration);
   }
-    function playSuccessChord() {
+    /* ================= PUENTE AUTOMÁTICO CON REGISTRO PAI APAFAM ================= */
+  const USUARIOS_APAFAM = [
+    "Lara", "Alan", "Elizabeth", "Laura", "Gemma", "Celia",
+    "MartaSP", "Nazaret", "Pilar", "Benito", "Angel Luis", "Alex",
+    "Lorena", "Bianca", "Paquito", "Aroa", "GemaS", "Diana",
+    "Luis Miguel", "Mari Sol", "Gabriela", "Paloma", "Waffa", "Ane",
+    "Anne", "Ana", "Gonzalo", "Rosa", "Maria"
+  ];
+  let registrosAPAFAM = [];
+  let ultimoResultado = { actividad: "", obs: "", une: "3 - Progreso Adecuado / En avance" };
+
+  function detectarResultadoActual() {
+    const active = document.querySelector('.screen.active');
+    if (!active) return;
+    const id = active.id;
+    if (id === 'screen-laberinto') {
+      const une = mazeErrors <= 3 ? "4 - Objetivo Superado / Consolidado" : "3 - Progreso Adecuado / En avance";
+      ultimoResultado = {
+        actividad: `Laberinto Antipín (Nivel ${currentMazeLvl + 1})`,
+        obs: `Pantalla Pentahealth: Aciertos 2/2, Choques contra muro: ${mazeErrors}`,
+        une
+      };
+    } else if (id === 'screen-diferencias') {
+      const nombres = ["Antipín", "Mujer Recostada", "Zooforme"];
+      const une = diffErrorCount <= 2 ? "4 - Objetivo Superado / Consolidado" : "3 - Progreso Adecuado / En avance";
+      ultimoResultado = {
+        actividad: `Discriminación Visual 4 Diferencias (${nombres[currentDiffIdx]})`,
+        obs: `Pantalla Pentahealth: Aciertos 4/4, Errores: ${diffErrorCount}`,
+        une
+      };
+    } else if (id === 'screen-mujer') {
+      ultimoResultado = {
+        actividad: "Esquema Corporal y Fondo-Figura (Mujer Recostada)",
+        obs: "Pantalla Pentahealth: 7/7 etiquetas colocadas correctamente",
+        une: "4 - Objetivo Superado / Consolidado"
+      };
+    } else if (id === 'screen-zooformes') {
+      ultimoResultado = {
+        actividad: `Puzle Colaborativo Zooformes (${puzzleGridSize * puzzleGridSize} piezas)`,
+        obs: `Pantalla Pentahealth: Puzle completado (${puzzleGridSize}x${puzzleGridSize})`,
+        une: "4 - Objetivo Superado / Consolidado"
+      };
+    } else if (id === 'screen-antipin') {
+      ultimoResultado = {
+        actividad: "Percepción Gestáltica Figura-Fondo (Antipín)",
+        obs: "Pantalla Pentahealth: Exploración y debate grupal completado",
+        une: "3 - Progreso Adecuado / En avance"
+      };
+    } else {
+      ultimoResultado = {
+        actividad: "Diseño Simétrico para Matriz Láser",
+        obs: "Pantalla Pentahealth: Creación gráfica en blanco y negro puro",
+        une: "3 - Progreso Adecuado / En avance"
+      };
+    }
+  }
+
+  function abrirModalAPAFAM() {
+    detectarResultadoActual();
+    document.getElementById('apafam-resumen').textContent = `${ultimoResultado.actividad} · ${ultimoResultado.obs}`;
+    const grid = document.getElementById('apafam-users-grid');
+    grid.innerHTML = '';
+    USUARIOS_APAFAM.forEach(nombre => {
+      const b = document.createElement('button');
+      b.className = 'btn-xl outline';
+      b.style.padding = '12px 8px';
+      b.style.fontSize = '1.05rem';
+      b.textContent = nombre;
+      b.onclick = () => guardarFilaAPAFAM(nombre);
+      grid.appendChild(b);
+    });
+    document.getElementById('modal-apafam').style.display = 'flex';
+  }
+
+  function cerrarModalAPAFAM() {
+    document.getElementById('modal-apafam').style.display = 'none';
+  }
+
+  function guardarFilaAPAFAM(usuario) {
+    const hoy = new Date();
+    const fecha = String(hoy.getDate()).padStart(2, '0') + '/' + String(hoy.getMonth() + 1).padStart(2, '0') + '/' + hoy.getFullYear();
+    const ubicacion = document.getElementById('apafam-ubicacion').value;
+    const apoyo = document.getElementById('apafam-apoyo').value;
+
+    registrosAPAFAM.push([
+      fecha,
+      usuario,
+      ubicacion,
+      "Pantalla Pentahealth",
+      ultimoResultado.actividad,
+      "Desarrollo personal / Inclusión social",
+      "Académicas funcionales (atención y memoria) / Habilidades sociales (cooperación y turnos)",
+      "3. Visual-espacial / 4. Cinestésica",
+      apoyo,
+      ultimoResultado.une,
+      ultimoResultado.obs
+    ]);
+
+    document.getElementById('btnExportCSV').textContent = `📥 Exportar APAFAM (${registrosAPAFAM.length})`;
+    cerrarModalAPAFAM();
+    playTone(783.99, 0.25);
+    alert(`✅ Guardado para ${usuario} (${registrosAPAFAM.length} registros listos para exportar).`);
+  }
+
+  function descargarSesionAPAFAM() {
+    if (registrosAPAFAM.length === 0) {
+      alert("Aún no hay resultados guardados en esta sesión. Al terminar un juego pulsa '📋 Guardar en APAFAM'.");
+      return;
+    }
+    const cabecera = "Fecha;Usuario;Ubicación;Taller;Tarea Realizada;Dimensiones (Verdugo);Habilidades (Verdugo);Inteligencias Múltiples;Tipo de Apoyo;Evolución PAI (Norma UNE);Observaciones PAI";
+    const filas = registrosAPAFAM.map(r => r.map(v => String(v).replace(/;/g, ',')).join(';'));
+    const csvContent = "\uFEFF" + [cabecera, ...filas].join("\r\n");
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "resultados_pentahealth_apafam.csv";
+    link.click();
+  }
+
+  function playSuccessChord() {
     playTone(523.25, 0.35, 'triangle', 0);
     playTone(659.25, 0.35, 'triangle', 0.08);
     playTone(783.99, 0.50, 'triangle', 0.16);
     document.querySelectorAll('.screen.active .feedback-box').forEach(box => {
+      if (!box.querySelector('.btn-finish-apafam')) {
+        const btnReg = document.createElement('button');
+        btnReg.className = 'btn-xl btn-finish-apafam';
+        btnReg.style.marginLeft = '12px';
+        btnReg.textContent = '📋 Guardar en APAFAM';
+        btnReg.onclick = abrirModalAPAFAM;
+        box.appendChild(btnReg);
+      }
       if (!box.querySelector('.btn-finish-home')) {
         const btn = document.createElement('button');
         btn.className = 'btn-xl success btn-finish-home';
-        btn.style.marginLeft = '14px';
-        btn.textContent = '🏠 Volver al Inicio';
+        btn.style.marginLeft = '10px';
+        btn.textContent = '🏠 Inicio';
         btn.onclick = goHome;
         box.appendChild(btn);
       }
