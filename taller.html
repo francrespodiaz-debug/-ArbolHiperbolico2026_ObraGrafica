@@ -721,41 +721,92 @@
     document.getElementById('diff-img-2').src = diffPairs[currentPair][1];
     clearDiffMarkers();
   }
+  /* MÓDULO 4: MUJER RECOSTADA (CON VALIDACIÓN DE ZONAS REALES) */
+  const mujerZones = [
+    { text: 'COLETERO EN EL PELO', x: 16, y: 17 },
+    { text: 'CARA / CUELLO', x: 24, y: 31 },
+    { text: 'HOMBRO', x: 38, y: 45 },
+    { text: 'ESPALDA', x: 56, y: 50 },
+    { text: 'CULO', x: 82, y: 63 },
+    { text: 'CODO', x: 13, y: 74 },
+    { text: 'MANO DE BRAZO DERECHO AGARRA MUÑECA DEL BRAZO IZQUIERDO', x: 35, y: 81 }
+  ];
+  let selectedZone = null;
+  let mujerSolved = 0;
 
-  /* MÓDULO 4: MUJER RECOSTADA */
-  const mujerLabels = ['COLETERO EN EL PELO', 'CARA / CUELLO', 'HOMBRO', 'ESPALDA', 'CULO', 'CODO', 'MANO DE BRAZO DERECHO AGARRA MUÑECA DEL BRAZO IZQUIERDO'];
-  let selectedLabelText = null;
   function initMujerTags() {
-    const pool = document.getElementById('tags-pool'); pool.innerHTML = '';
-    document.querySelectorAll('.placed-tag').forEach(t => t.remove()); selectedLabelText = null;
-    mujerLabels.forEach(text => {
-      const btn = document.createElement('button'); btn.className = 'drag-tag'; btn.textContent = text;
+    const pool = document.getElementById('tags-pool');
+    pool.innerHTML = '';
+    document.querySelectorAll('.placed-tag').forEach(t => t.remove());
+    selectedZone = null;
+    mujerSolved = 0;
+
+    mujerZones.forEach((z, idx) => {
+      const btn = document.createElement('button');
+      btn.className = 'drag-tag';
+      btn.id = 'mtag-btn-' + idx;
+      btn.textContent = z.text;
       btn.onclick = () => {
-        selectedLabelText = text;
+        if (btn.disabled) return;
+        selectedZone = { ...z, idx };
         document.querySelectorAll('.drag-tag').forEach(b => b.style.outline = 'none');
         btn.style.outline = '4px solid #2b6cb0';
-        document.getElementById('mujer-feedback').textContent = 'Ahora toca sobre la estampa dónde va: "' + text + '"';
+        document.getElementById('mujer-feedback').textContent = 'Toca sobre la estampa dónde está: "' + z.text + '"';
         playTone(523.25, 0.15);
       };
       pool.appendChild(btn);
     });
   }
+
   document.getElementById('mujer-stage').addEventListener('pointerdown', e => {
-    if (!selectedLabelText || e.target.classList.contains('placed-tag')) return;
-    const stage = document.getElementById('mujer-stage'), rect = stage.getBoundingClientRect();
-    const tag = document.createElement('div'); tag.className = 'placed-tag'; tag.textContent = selectedLabelText;
-    tag.style.left = (e.clientX - rect.left - 60) + 'px'; tag.style.top = (e.clientY - rect.top - 20) + 'px';
-    tag.onpointerdown = ev => {
-      ev.stopPropagation();
-      const move = mv => { tag.style.left = (mv.clientX - rect.left - 60) + 'px'; tag.style.top = (mv.clientY - rect.top - 20) + 'px'; };
-      const up = () => { window.removeEventListener('pointermove', move); window.removeEventListener('pointerup', up); };
-      window.addEventListener('pointermove', move); window.addEventListener('pointerup', up);
-    };
-    stage.appendChild(tag); playSuccessChord();
-    document.getElementById('mujer-feedback').textContent = '¡Etiqueta colocada! Puedes arrastrarla para ajustarla o elegir otra.';
-    selectedLabelText = null; document.querySelectorAll('.drag-tag').forEach(b => b.style.outline = 'none');
+    if (!selectedZone || e.target.classList.contains('placed-tag')) return;
+    const img = document.getElementById('img-mujer');
+    const rect = img.getBoundingClientRect();
+    let clickX = ((e.clientX - rect.left) / rect.width) * 100;
+    const clickY = ((e.clientY - rect.top) / rect.height) * 100;
+
+    // Si está activado el modo espejo (Matriz Láser), invierte la coordenada X automáticamente
+    if (img.classList.contains('mirrored')) clickX = 100 - clickX;
+
+    const dist = Math.hypot(clickX - selectedZone.x, clickY - selectedZone.y);
+
+    if (dist <= 18) {
+      const stage = document.getElementById('mujer-stage');
+      const sRect = stage.getBoundingClientRect();
+      const tag = document.createElement('div');
+      tag.className = 'placed-tag';
+      tag.textContent = selectedZone.text;
+      tag.style.left = (e.clientX - sRect.left - 65) + 'px';
+      tag.style.top = (e.clientY - sRect.top - 22) + 'px';
+      stage.appendChild(tag);
+
+      const usedBtn = document.getElementById('mtag-btn-' + selectedZone.idx);
+      usedBtn.disabled = true;
+      usedBtn.style.opacity = '0.35';
+      usedBtn.style.outline = 'none';
+      selectedZone = null;
+      mujerSolved++;
+
+      if (mujerSolved === mujerZones.length) {
+        document.getElementById('mujer-feedback').textContent = '🎉 ¡COMPLETADO! Ya veis cómo su cuerpo dibuja la forma del sofá invisible.';
+        playSuccessChord();
+      } else {
+        document.getElementById('mujer-feedback').textContent = '✅ ¡Muy bien! Lleváis ' + mujerSolved + ' de 7 etiquetas.';
+        playTone(659.25, 0.22);
+      }
+    } else {
+      playTone(220, 0.2, 'sawtooth');
+      document.getElementById('mujer-feedback').textContent = '❌ Ahí no está "' + selectedZone.text + '". ¡Fijaos bien y probad en otro sitio!';
+    }
   });
-  function resetMujerTags() { initMujerTags(); document.getElementById('mujer-feedback').textContent = 'Etiquetas recogidas.'; playTone(392, 0.15); }
+
+  function resetMujerTags() {
+    initMujerTags();
+    document.getElementById('mujer-feedback').textContent = 'Etiquetas recogidas. ¡Volved a empezar!';
+    playTone(392, 0.15);
+  }
+
+   
 
     /* MÓDULO 5: PUZLES ZOOFORMES */
   const zooList = ['series/zooforme/zooforme01.png', 'series/zooforme/zooforme02.png', 'series/zooforme/zooforme03.png', 'series/zooforme/zooforme04.png', 'series/zooforme/zooforme05.png'];
