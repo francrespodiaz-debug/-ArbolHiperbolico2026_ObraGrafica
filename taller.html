@@ -878,7 +878,7 @@ if (name === 'antipin') resetAntipin();
     document.getElementById(imgId).classList.toggle(className);
   }
 
-   /* MÓDULO 1: ANTIPÍN (12 PARTES REALES · TANDAS AL AZAR · NIVEL 1 VOZ / NIVEL 2 LECTURA+IZQ/DER) */
+    /* MÓDULO 1: ANTIPÍN (COORDENADAS AJUSTADAS + NIVEL 1 VOZ / NIVEL 2 LECTURA+IZQ/DER + TANDAS 3/6/12) */
   let antipinLevel = 1;
   let antipinLength = 3;
   let antipinQueue = [];
@@ -888,20 +888,20 @@ if (name === 'antipin') resetAntipin();
   let antipinFirstView = "No seleccionada";
   let antipinInverted = false;
 
-  // Coordenadas exactas (%) tomadas de las 12 etiquetas de tu estampa 2/20
+  // Coordenadas precisas (%) sobre Antipin002.png
   const ZONAS_ANTIPIN = {
-    cuerno_izq:  { x: 35, y: 18, r: 13 },
-    cuerno_der:  { x: 65, y: 18, r: 13 },
-    oreja_izq:   { x: 25, y: 27, r: 12 },
-    oreja_der:   { x: 75, y: 27, r: 12 },
-    frente:      { x: 50, y: 31, r: 14 },
-    ping_izq:    { x: 30, y: 50, r: 15 },
-    ping_der:    { x: 70, y: 50, r: 15 },
-    aleta_izq:   { x: 16, y: 63, r: 13 },
-    aleta_der:   { x: 84, y: 63, r: 13 },
-    pie_izq:     { x: 24, y: 86, r: 13 },
-    pie_der:     { x: 76, y: 86, r: 13 },
-    hocico:      { x: 50, y: 81, r: 14 }
+    cuerno_izq:  { x: 34, y: 19, r: 10 },
+    cuerno_der:  { x: 66, y: 19, r: 10 },
+    oreja_izq:   { x: 25, y: 38, r: 9 },
+    oreja_der:   { x: 75, y: 38, r: 9 },
+    frente:      { x: 50, y: 35, r: 12 },
+    ping_izq:    { x: 30, y: 55, r: 13 },
+    ping_der:    { x: 70, y: 55, r: 13 },
+    aleta_izq:   { x: 16, y: 65, r: 11 },
+    aleta_der:   { x: 84, y: 65, r: 11 },
+    pie_izq:     { x: 24, y: 86, r: 11 },
+    pie_der:     { x: 76, y: 86, r: 11 },
+    hocico:      { x: 50, y: 81, r: 12 }
   };
 
   // Nivel 1: 7 conceptos distintos (sin izquierda/derecha, admite ambos lados y tiene voz)
@@ -954,15 +954,17 @@ if (name === 'antipin') resetAntipin();
     antipinLevel = lvl;
     document.getElementById('btn-anti-lvl1').className = lvl === 1 ? 'btn-xl success' : 'btn-xl outline';
     document.getElementById('btn-anti-lvl2').className = lvl === 2 ? 'btn-xl success' : 'btn-xl outline';
-    document.getElementById('btn-anti-voice').style.display = lvl === 1 ? 'inline-block' : 'none';
+    const btnVoice = document.getElementById('btn-anti-voice');
+    if (btnVoice) btnVoice.style.visibility = lvl === 1 ? 'visible' : 'hidden';
     resetAntipin();
   }
 
   function setAntipinLength(len) {
     antipinLength = len;
-    [3, 6, 12].forEach(n => {
-      document.getElementById('btn-anti-len' + n).className = (n === len) ? 'btn-xl success' : 'btn-xl outline';
-    });
+        document.getElementById('btn-anti-len3').className = (len === 3) ? 'btn-xl success' : 'btn-xl outline';
+    document.getElementById('btn-anti-len6').className = (len === 6) ? 'btn-xl success' : 'btn-xl outline';
+    document.getElementById('btn-anti-len12').className = (len === 12) ? 'btn-xl success' : 'btn-xl outline';
+
     resetAntipin();
   }
 
@@ -981,7 +983,7 @@ if (name === 'antipin') resetAntipin();
 
   function dibujarAroAntipin(xPct, yPct) {
     const ring = document.createElement('div');
-    ring.style.cssText = `position:absolute; left:${xPct}%; top:${yPct}%; width:46px; height:46px; border:5px solid #2f855a; border-radius:50%; transform:translate(-50%,-50%); pointer-events:none; box-shadow:0 0 0 3px #fff;`;
+    ring.style.cssText = `position:absolute; left:${xPct}%; top:${yPct}%; width:42px; height:42px; border:5px solid #2f855a; border-radius:50%; transform:translate(-50%,-50%); pointer-events:none; box-shadow:0 0 0 3px #fff;`;
     document.getElementById('antipin-rings').appendChild(ring);
   }
 
@@ -1030,9 +1032,9 @@ if (name === 'antipin') resetAntipin();
     document.getElementById('antipin-rings').innerHTML = '';
     document.getElementById('antipin-hits').textContent = `✅ 0 / ${total}`;
     document.getElementById('antipin-errors').textContent = '❌ 0';
-    document.getElementById('antipin-feedback').textContent = antipinQueue[0].text;
+       document.getElementById('antipin-feedback').textContent = antipinQueue[0].text;
     if (antipinLevel === 1) hablarTexto(antipinQueue[0].voice);
-  }
+    }
 
  
      /* MÓDULO 2: LABERINTO REAL CON BIFURCACIONES Y 3 NIVELES */
