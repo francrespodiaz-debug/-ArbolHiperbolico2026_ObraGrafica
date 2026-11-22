@@ -573,7 +573,7 @@
     <div style="display:grid; grid-template-columns: 44% 1fr; gap:16px; height:100%; align-items:stretch;">
       <div class="stage-box" style="flex-direction:column; gap:10px; padding:14px;">
         <div id="mujer-stage" style="position:relative; display:inline-block; max-height:76%; cursor:pointer;" onclick="checkMujerTouch(event)">
-          <img id="img-mujer" src="series/mujer_recostada/mujer_recostada14.png" alt="Mujer Recostada" style="max-height:58vh; max-width:100%; border-radius:12px; display:block;">
+          <img id="img-mujer" src="series/mujer_recostada/Mujerrecostada14.png" alt="Mujer Recostada" style="max-height:58vh; max-width:100%; border-radius:12px; display:block;">
           <div id="mujer-rings"></div>
           <div id="mujer-hint-halo" style="display:none; position:absolute; width:64px; height:64px; border:5px dashed #dd6b20; background:rgba(237,137,54,0.25); border-radius:50%; transform:translate(-50%,-50%); pointer-events:none;"></div>
         </div>
@@ -1551,7 +1551,7 @@ if (name === 'antipin') resetAntipin();
   }
 
   function cambiarEstadoMujer(num) {
-    document.getElementById('img-mujer').src = `series/mujer_recostada/mujer_recostada${num}.png`;
+    document.getElementById('img-mujer').src = `series/mujer_recostada/Mujerrecostada${num}.png`;
     document.getElementById('btn-mujer-st01').className = num === '01' ? 'btn-xl success' : 'btn-xl outline';
     document.getElementById('btn-mujer-st07').className = num === '07' ? 'btn-xl success' : 'btn-xl outline';
     document.getElementById('btn-mujer-st14').className = num === '14' ? 'btn-xl success' : 'btn-xl outline';
