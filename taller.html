@@ -1484,19 +1484,10 @@ if (name === 'antipin') resetAntipin();
   let mujerErrors = 0;
   let mujerConsecutiveErrors = 0;
 
-  // Coordenadas exactas (%) tomadas de las 10 flechas de tu estampa
-  
-  };
+ 
 
-  // Nivel 1: 5 partes básicas con voz automática y sin izquierda/derecha
-  const MUJER_LVL1 = new Array(
-    { text: "Toca la CARA", voice: "Toca la cara", key: "cara" },
-    { text: "Toca el COLETERO en el pelo", voice: "Toca el coletero en el pelo", key: "coletero" },
-    { text: "Toca el HOMBRO", voice: "Toca el hombro", key: "hombro" },
-    { text: "Toca la ESPALDA", voice: "Toca la espalda", key: "espalda" },
-    { text: "Toca el CULO", voice: "Toca el culo", key: "culo" }
-    );
-    const ZONAS_MUJER = {
+   // Coordenadas exactas (%) tomadas de las 10 flechas de tu estampa
+  const ZONAS_MUJER = {
     cara:       { x: 25, y: 24, r: 9,  label: "Cara" },
     coletero:   { x: 38, y: 27, r: 8,  label: "Coletero en el pelo" },
     cuello:     { x: 34, y: 39, r: 9,  label: "Cuello" },
@@ -1508,6 +1499,15 @@ if (name === 'antipin') resetAntipin();
     espalda:    { x: 56, y: 50, r: 12, label: "Espalda" },
     culo:       { x: 78, y: 58, r: 12, label: "Culo" }
   };
+
+  // Nivel 1: 5 partes básicas con voz automática y sin izquierda/derecha
+  const MUJER_LVL1 = [
+    { text: "Toca la CARA", voice: "Toca la cara", key: "cara" },
+    { text: "Toca el COLETERO en el pelo", voice: "Toca el coletero en el pelo", key: "coletero" },
+    { text: "Toca el HOMBRO", voice: "Toca el hombro", key: "hombro" },
+    { text: "Toca la ESPALDA", voice: "Toca la espalda", key: "espalda" },
+    { text: "Toca el CULO", voice: "Toca el culo", key: "culo" }
+  ];
 
 
   // Nivel 2: Las 10 partes completas de tu lámina en modo lectura (sin voz automática)
