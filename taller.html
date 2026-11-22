@@ -509,36 +509,38 @@
   </section>
 
 
-  <!-- MÓDULO 2: CAMINO DE LOS PINGÜINOS -->
+   <!-- MÓDULO 2: CAMINO DE LOS PINGÜINOS (ESTÉTICA XILOGRÁFICA + 1 O 2 PINGÜINOS + 3 NIVELES) -->
   <section id="screen-laberinto" class="screen">
-    <div class="work-area">
-      <div class="artwork-stage" style="flex-direction:column;">
-        <canvas id="mazeCanvas" width="540" height="540"></canvas>
+    <div style="display:grid; grid-template-columns: 54% 1fr; gap:16px; height:100%; align-items:stretch;">
+      <div class="stage-box" style="padding:10px; background:#fff;">
+        <canvas id="mazeCanvas" width="540" height="540" style="max-height:74vh; max-width:100%; border-radius:8px; border:3px solid #1a202c; touch-action:none;"></canvas>
       </div>
       <div class="side-panel">
-        <div>
-          <h2 class="panel-title">El Camino de los Pingüinos</h2>
-          <p class="panel-subtitle">
-            <b>1.</b> Apoya un dedo en el <b>Pingüino Izquierdo</b> y otro en el <b>Pingüino Derecho</b> (podéis hacerlo entre dos compañeros).<br><br>
-            <b>2.</b> Deslizad los dedos siguiendo los caminos hacia el centro hasta llegar a los <b>ojos compartidos</b>.
-          </p>
-                    <div style="display:flex; gap:12px; margin-bottom:14px;">
-            <span id="maze-hits" style="font-size:1.25rem; font-weight:800; color:#22543d; background:#c6f6d5; padding:8px 14px; border-radius:12px;">✅ En meta: 0 / 2</span>
-            <span id="maze-errors" style="font-size:1.25rem; font-weight:800; color:#742a2a; background:#fed7d7; padding:8px 14px; border-radius:12px;">💥 Choques: 0</span>
-          </div>
-
-          <div class="feedback-box" id="maze-feedback">Arrastra los dos pingüinos hacia el centro para descubrir el antílope.</div>
-        </div>
-               <div style="display:flex; gap:10px; flex-wrap:wrap;">
-          <button class="btn-xl outline" onclick="setMazeLevel(0)">🟢 Nivel 1 (Fácil)</button>
-          <button class="btn-xl outline" onclick="setMazeLevel(1)">🟡 Nivel 2 (Medio)</button>
-          <button class="btn-xl outline" onclick="setMazeLevel(2)">🔴 Nivel 3 (Reto)</button>
-          <button class="btn-xl success" onclick="initMaze()">🔄 Reiniciar</button>
+        <h2 class="panel-title">🐧 El Camino de los Pingüinos</h2>
+        <div style="display:flex; gap:10px; margin-bottom:10px; flex-wrap:wrap;">
+          <span id="maze-hits" style="font-size:1.15rem; font-weight:800; color:#22543d; background:#c6f6d5; padding:6px 12px; border-radius:10px;">✅ En meta: 0 / 1</span>
+          <span id="maze-errors" style="font-size:1.15rem; font-weight:800; color:#742a2a; background:#fed7d7; padding:6px 12px; border-radius:10px;">💥 Choques: 0</span>
         </div>
 
+        <p style="font-weight:700; color:#2d3748; margin-bottom:6px; font-size:0.98rem;">1. Participación:</p>
+        <div style="display:flex; gap:8px; margin-bottom:10px;">
+          <button id="btn-maze-mode1" class="btn-xl success" style="padding:8px 12px; font-size:1rem;" onclick="setMazeMode(1)">👤 1 Pingüino</button>
+          <button id="btn-maze-mode2" class="btn-xl outline" style="padding:8px 12px; font-size:1rem;" onclick="setMazeMode(2)">👥 2 Pingüinos</button>
+        </div>
+
+        <p style="font-weight:700; color:#2d3748; margin-bottom:6px; font-size:0.98rem;">2. Nivel de recorrido:</p>
+        <div style="display:flex; gap:8px; margin-bottom:10px; flex-wrap:wrap;">
+          <button id="btn-maze-lvl0" class="btn-xl success" style="padding:8px 12px; font-size:0.98rem;" onclick="setMazeLevel(0)">🟢 Nivel 1 (Ancho)</button>
+          <button id="btn-maze-lvl1" class="btn-xl outline" style="padding:8px 12px; font-size:0.98rem;" onclick="setMazeLevel(1)">🟡 Nivel 2 (Medio)</button>
+          <button id="btn-maze-lvl2" class="btn-xl outline" style="padding:8px 12px; font-size:0.98rem;" onclick="setMazeLevel(2)">🔴 Nivel 3 (Xilografía)</button>
+        </div>
+
+        <div class="feedback-box" id="maze-feedback" style="margin-bottom:12px; font-size:1.15rem;">Arrastra el pingüino por los pasillos blancos hasta el antílope.</div>
+        <button class="btn-xl secondary" onclick="initMaze()">🔄 Reiniciar recorrido</button>
       </div>
     </div>
   </section>
+
 
    <!-- MÓDULO 3: ENCUENTRA LAS DIFERENCIAS -->
   <section id="screen-diferencias" class="screen">
@@ -1039,193 +1041,299 @@ if (name === 'antipin') resetAntipin();
     }
 
  
-     /* MÓDULO 2: LABERINTO REAL CON BIFURCACIONES Y 3 NIVELES */
-  const mazeImg = new Image(); mazeImg.src = 'series/antipin/Antipin002.png';
-    const mazeLevels = [
-    // NIVEL 1 (9x9 - Fácil)
-    [
-      "#########",
-      "#...#...#",
-      "#.#.#.#.#",
-      "#.#...#.#",
-      "#.###G#.#",
-      "#...#...#",
-      "#.#.###.#",
-      "#.......#",
-      "#########"
-    ],
-    // NIVEL 2 (11x11 - Medio)
-    [
-      "###########",
-      "#...#.#...#",
-      "#.#.#.#.#.#",
-      "#.#.....#.#",
-      "#.###.###.#",
-      "#...#G#...#",
-      "#.#.#.#.#.#",
-      "#.#...#.#.#",
-      "#.###.###.#",
-      "#.........#",
-      "###########"
-    ],
-    // NIVEL 3 (13x13 - Reto)
-    [
-      "#############",
-      "#.....#.....#",
-      "#.###.#.###.#",
-      "#.#...#...#.#",
-      "#.#.#####.#.#",
-      "#...#...#...#",
-      "###.#.G.#.###",
-      "#...#...#...#",
-      "#.#.###.#.#.#",
-      "#.#...#...#.#",
-      "#.###.#.###.#",
-      "#...........#",
-      "#############"
-    ]
-  ];
+      /* MÓDULO 2: LABERINTO XILOGRÁFICO CON PIEZAS REALES DE ANTIPÍN */
+  let mazeMode = 1;
+  let currentMazeLvl = 0;
+  let mazeErrors = 0;
+  let mazePenaltyCooldown = 0;
+  let draggingPing = null;
+  let mazeCompleted = false;
 
+  const mazeCanvas = document.getElementById('mazeCanvas');
+  const mCtx = mazeCanvas.getContext('2d', { willReadFrequently: true });
+  const offMaze = document.createElement('canvas');
+  offMaze.width = 540;
+  offMaze.height = 540;
+  const offCtx = offMaze.getContext('2d', { willReadFrequently: true });
 
-    let currentMazeLvl = 0;
-  let leftP = { x: 0, y: 0, done: false };
-  let rightP = { x: 0, y: 0, done: false };
-  let goalPos = { x: 0, y: 0 };
-  let activeTouches = {}, mazeCompleted = false;
-  let mazeHits = 0, mazeErrors = 0, lastHitSound = 0;
+  const spritesMaze = { pingIzq: null, pingDer: null, antilope: null, labAlto: new Image(), fullAntipin: new Image() };
+  spritesMaze.labAlto.src = 'recursos_juego/laberinto_alto.png';
+  spritesMaze.fullAntipin.src = 'series/antipin/Antipin002.png';
 
-  function setMazeLevel(lvl) {
-    currentMazeLvl = lvl;
-    playTone(523.25, 0.15);
+  function cargarSpriteTransparente(src, key) {
+    const img = new Image();
+    img.onload = () => {
+      const c = document.createElement('canvas');
+      c.width = img.width; c.height = img.height;
+      const cx = c.getContext('2d');
+      cx.drawImage(img, 0, 0);
+      const id = cx.getImageData(0, 0, c.width, c.height);
+      const pix = id.data;
+      for (let i = 0; i < pix.length; i += 4) {
+        const brillo = (pix.at(i) + pix.at(i+1) + pix.at(i+2)) / 3;
+        if (brillo > 180) {
+          pix.set(new Array(1).fill(0), i + 3);
+        } else {
+          pix.set(new Array(15, 15, 15, 255), i);
+        }
+      }
+      cx.putImageData(id, 0, 0);
+      spritesMaze[key] = c;
+      if (document.getElementById('screen-laberinto').classList.contains('active')) drawMaze();
+    };
+    img.src = src;
+  }
+  cargarSpriteTransparente('recursos_juego/pinguino_izq.png', 'pingIzq');
+  cargarSpriteTransparente('recursos_juego/pinguino_der.png', 'pingDer');
+  cargarSpriteTransparente('recursos_juego/antilope_meta.png', 'antilope');
+
+  const MAZE_LVL0 = new Array(
+    "#.#####",
+    "#.....#",
+    "#.###.#",
+    "#...#.#",
+    "###.#.#",
+    "#.....#",
+    "#####.#"
+  );
+
+  const MAZE_LVL1 = new Array(
+    "#.#########",
+    "#...#.....#",
+    "#.###.###.#",
+    "#.....#...#",
+    "#.#####.###",
+    "#...#.....#",
+    "###.#.###.#",
+    "#...#...#.#",
+    "#.#####.#.#",
+    "#.......#.#",
+    "#########.#"
+  );
+
+  let pinguinos = new Array();
+  let goalPos = { x: 465, y: 470 };
+
+  function setMazeMode(mode) {
+    mazeMode = mode;
+    document.getElementById('btn-maze-mode1').className = mode === 1 ? 'btn-xl success' : 'btn-xl outline';
+    document.getElementById('btn-maze-mode2').className = mode === 2 ? 'btn-xl success' : 'btn-xl outline';
     initMaze();
   }
 
-  function initMaze() {
-    const grid = mazeLevels[currentMazeLvl];
-    const rows = grid.length, cols = grid.length;
-    const c = document.getElementById('mazeCanvas');
-    const cellW = c.width / cols, cellH = c.height / rows;
+  function setMazeLevel(lvl) {
+    currentMazeLvl = lvl;
+    document.getElementById('btn-maze-lvl0').className = lvl === 0 ? 'btn-xl success' : 'btn-xl outline';
+    document.getElementById('btn-maze-lvl1').className = lvl === 1 ? 'btn-xl success' : 'btn-xl outline';
+    document.getElementById('btn-maze-lvl2').className = lvl === 2 ? 'btn-xl success' : 'btn-xl outline';
+    initMaze();
+  }
 
-    leftP = { x: cellW * 1.5, y: cellH * (rows - 1.5), done: false };
-    rightP = { x: cellW * (cols - 1.5), y: cellH * (rows - 1.5), done: false };
-    mazeCompleted = false;
-    activeTouches = {};
-    mazeHits = 0;
-    mazeErrors = 0;
-    document.getElementById('maze-hits').textContent = '✅ En meta: 0 / 2';
-    document.getElementById('maze-errors').textContent = '💥 Choques: 0';
-
-    for (let r = 0; r < rows; r++) {
-      for (let col = 0; col < cols; col++) {
-        if (grid[r][col] === 'G') {
-          goalPos = { x: cellW * (col + 0.5), y: cellH * (r + 0.5) };
+  function construirFondoLaberinto() {
+    offCtx.fillStyle = '#ffffff';
+    offCtx.fillRect(0, 0, 540, 540);
+    if (currentMazeLvl < 2) {
+      const grid = currentMazeLvl === 0 ? MAZE_LVL0 : MAZE_LVL1;
+      const n = grid.length;
+      const cell = 540 / n;
+      offCtx.fillStyle = '#111111';
+      for (let r = 0; r < n; r++) {
+        const fila = grid.at(r);
+        for (let c = 0; c < n; c++) {
+          if (fila.charAt(c) === '#') offCtx.fillRect(c * cell, r * cell, Math.ceil(cell), Math.ceil(cell));
         }
       }
+      goalPos = { x: (n - 1.5) * cell, y: (n - 0.6) * cell };
+      const start1 = { x: 1.5 * cell, y: 0.6 * cell };
+      const start2 = { x: (n - 1.5) * cell, y: 1.5 * cell };
+      return { start1, start2 };
+    } else {
+      if (spritesMaze.labAlto.complete && spritesMaze.labAlto.naturalWidth > 0) {
+        offCtx.drawImage(spritesMaze.labAlto, 0, 0, 540, 540);
+        const id = offCtx.getImageData(0, 0, 540, 540);
+        const pix = id.data;
+        for (let i = 0; i < pix.length; i += 4) {
+          const lum = (pix.at(i) + pix.at(i+1) + pix.at(i+2)) / 3;
+          const v = lum < 145 ? 15 : 255;
+          pix.set(new Array(v, v, v, 255), i);
+        }
+        offCtx.putImageData(id, 0, 0);
+      }
+      goalPos = { x: 468, y: 492 };
+      return { start1: { x: 74, y: 44 }, start2: { x: 468, y: 74 } };
     }
-    document.getElementById('maze-feedback').textContent = 'Nivel ' + (currentMazeLvl + 1) + ': Lleva ambos pingüinos desde las esquinas hasta el antílope del centro.';
+  }
+
+  function initMaze() {
+    mazeErrors = 0;
+    mazeCompleted = false;
+    draggingPing = null;
+    const pts = construirFondoLaberinto();
+    pinguinos = new Array(
+      { id: 0, x: pts.start1.x, y: pts.start1.y, done: false, sprite: 'pingIzq', trail: new Array({x: pts.start1.x, y: pts.start1.y}) }
+    );
+    if (mazeMode === 2) {
+      pinguinos.push({ id: 1, x: pts.start2.x, y: pts.start2.y, done: false, sprite: 'pingDer', trail: new Array({x: pts.start2.x, y: pts.start2.y}) });
+    }
+    actualizarMarcadorMaze();
+    document.getElementById('maze-feedback').textContent = mazeMode === 1
+      ? 'Arrastra el pingüino por los pasillos blancos hasta el antílope.'
+      : 'Lleva los DOS pingüinos por los pasillos blancos hasta el antílope.';
     drawMaze();
   }
 
-  function canMoveTo(nx, ny) {
-    const grid = mazeLevels[currentMazeLvl];
-    const rows = grid.length, cols = grid.length;
-    const c = document.getElementById('mazeCanvas');
-    const cellW = c.width / cols, cellH = c.height / rows;
-    const col = Math.floor(nx / cellW), row = Math.floor(ny / cellH);
-    if (row < 0 || row >= rows || col < 0 || col >= cols) return false;
-    return grid[row][col] !== '#';
+  function actualizarMarcadorMaze() {
+    const enMeta = pinguinos.filter(p => p.done).length;
+    document.getElementById('maze-hits').textContent = `✅ En meta: ${enMeta} / ${pinguinos.length}`;
+    document.getElementById('maze-errors').textContent = `💥 Choques: ${mazeErrors}`;
   }
 
   function drawMaze() {
-    const c = document.getElementById('mazeCanvas'), ctx = c.getContext('2d');
-    ctx.clearRect(0, 0, c.width, c.height);
+    mCtx.clearRect(0, 0, 540, 540);
+    mCtx.drawImage(offMaze, 0, 0);
 
-    if (mazeCompleted) {
-      ctx.drawImage(mazeImg, 15, 15, c.width - 30, c.height - 30);
-      return;
+    pinguinos.forEach((p, idx) => {
+      if (p.trail.length > 1) {
+        mCtx.beginPath();
+        mCtx.strokeStyle = idx === 0 ? 'rgba(43, 108, 176, 0.35)' : 'rgba(214, 158, 46, 0.45)';
+        mCtx.lineWidth = currentMazeLvl === 0 ? 14 : (currentMazeLvl === 1 ? 10 : 6);
+        mCtx.lineCap = 'round';
+        mCtx.lineJoin = 'round';
+        mCtx.moveTo(p.trail.at(0).x, p.trail.at(0).y);
+        for (let i = 1; i < p.trail.length; i++) mCtx.lineTo(p.trail.at(i).x, p.trail.at(i).y);
+        mCtx.stroke();
+      }
+    });
+
+    const goalSize = currentMazeLvl === 0 ? 64 : (currentMazeLvl === 1 ? 48 : 38);
+    if (spritesMaze.antilope) {
+      mCtx.drawImage(spritesMaze.antilope, goalPos.x - goalSize/2, goalPos.y - goalSize/2, goalSize, goalSize * 1.25);
     }
 
-    const grid = mazeLevels[currentMazeLvl];
-    const rows = grid.length, cols = grid.length;
-    const cellW = c.width / cols, cellH = c.height / rows;
+    const pSize = currentMazeLvl === 0 ? 46 : (currentMazeLvl === 1 ? 34 : 26);
+    pinguinos.forEach(p => {
+      const sp = spritesMaze[p.sprite];
+      if (sp) {
+        mCtx.drawImage(sp, p.x - pSize * 0.35, p.y - pSize * 0.6, pSize * 0.7, pSize * 1.2);
+      } else {
+        mCtx.fillStyle = '#2b6cb0';
+        mCtx.beginPath(); mCtx.arc(p.x, p.y, pSize * 0.4, 0, Math.PI * 2); mCtx.fill();
+      }
+    });
 
-    ctx.save(); ctx.globalAlpha = 0.08; ctx.drawImage(mazeImg, 20, 20, c.width - 40, c.height - 40); ctx.restore();
+    if (mazeCompleted && spritesMaze.fullAntipin.complete) {
+      mCtx.fillStyle = 'rgba(255,255,255,0.92)';
+      mCtx.fillRect(60, 35, 420, 470);
+      mCtx.strokeStyle = '#111';
+      mCtx.lineWidth = 4;
+      mCtx.strokeRect(60, 35, 420, 470);
+      mCtx.drawImage(spritesMaze.fullAntipin, 95, 50, 350, 440);
+    }
+  }
 
-    for (let r = 0; r < rows; r++) {
-      for (let col = 0; col < cols; col++) {
-        const ch = grid[r][col];
-        if (ch === '#') {
-          ctx.fillStyle = '#1a202c';
-          ctx.fillRect(col * cellW, r * cellH, cellW + 0.6, cellH + 0.6);
-        } else if (ch === 'G') {
-          ctx.fillStyle = '#fefcbf';
-          ctx.beginPath(); ctx.arc(goalPos.x, goalPos.y, cellW * 0.45, 0, Math.PI * 2); ctx.fill();
-          ctx.strokeStyle = '#d69e2e'; ctx.lineWidth = 3; ctx.stroke();
-          ctx.font = Math.floor(cellW * 0.62) + 'px serif';
-          ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-          ctx.fillText('🦌', goalPos.x, goalPos.y);
-        }
+  function esPasilloLibre(x, y) {
+    if (x < 8 || x > 532 || y < 8 || y > 532) return false;
+    const r = currentMazeLvl === 0 ? 7 : (currentMazeLvl === 1 ? 5 : 3);
+    const pts = new Array(
+      new Array(x, y),
+      new Array(x - r, y),
+      new Array(x + r, y),
+      new Array(x, y - r),
+      new Array(x, y + r)
+    );
+    return pts.every(pt => {
+      const d = offCtx.getImageData(Math.round(pt.at(0)), Math.round(pt.at(1)), 1, 1).data;
+      return d.at(0) > 180;
+    });
+  }
+
+  function getMazeCoords(e) {
+    const rect = mazeCanvas.getBoundingClientRect();
+    const clientX = e.touches ? e.touches.item(0).clientX : e.clientX;
+    const clientY = e.touches ? e.touches.item(0).clientY : e.clientY;
+    return {
+      x: (clientX - rect.left) * (540 / rect.width),
+      y: (clientY - rect.top) * (540 / rect.height)
+    };
+  }
+
+  function startDragMaze(e) {
+    if (mazeCompleted) return;
+    const pos = getMazeCoords(e);
+    let best = null, bestD = 75;
+    pinguinos.forEach(p => {
+      if (!p.done) {
+        const d = Math.hypot(pos.x - p.x, pos.y - p.y);
+        if (d < bestD) { bestD = d; best = p; }
+      }
+    });
+    if (best) {
+      draggingPing = best;
+      playTone(440, 0.1);
+    }
+  }
+
+  function moveDragMaze(e) {
+    if (!draggingPing || mazeCompleted) return;
+    e.preventDefault();
+    const pos = getMazeCoords(e);
+    const dist = Math.hypot(pos.x - draggingPing.x, pos.y - draggingPing.y);
+    const steps = Math.min(25, Math.ceil(dist / 2));
+    const dx = (pos.x - draggingPing.x) / steps;
+    const dy = (pos.y - draggingPing.y) / steps;
+    let choco = false;
+
+    for (let s = 0; s < steps; s++) {
+      const nx = draggingPing.x + dx;
+      const ny = draggingPing.y + dy;
+      if (esPasilloLibre(nx, ny)) {
+        draggingPing.x = nx;
+        draggingPing.y = ny;
+      } else if (esPasilloLibre(nx, draggingPing.y)) {
+        draggingPing.x = nx;
+      } else if (esPasilloLibre(draggingPing.x, ny)) {
+        draggingPing.y = ny;
+      } else {
+        choco = true;
+        break;
       }
     }
 
-    const pSize = Math.floor(cellW * 0.58);
-    ctx.font = pSize + 'px serif';
-    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-    ctx.fillText('🐧', leftP.x, leftP.y);
-    ctx.fillText('🐧', rightP.x, rightP.y);
-  }
+    draggingPing.trail.push({ x: draggingPing.x, y: draggingPing.y });
 
-  const mazeCanvas = document.getElementById('mazeCanvas');
-  mazeCanvas.addEventListener('pointerdown', e => {
-    const rect = mazeCanvas.getBoundingClientRect();
-    const x = (e.clientX - rect.left) * (mazeCanvas.width / rect.width);
-    const y = (e.clientY - rect.top) * (mazeCanvas.height / rect.height);
-    if (!leftP.done && Math.hypot(x - leftP.x, y - leftP.y) < 42) activeTouches[e.pointerId] = 'left';
-    else if (!rightP.done && Math.hypot(x - rightP.x, y - rightP.y) < 42) activeTouches[e.pointerId] = 'right';
-  });
-
-  mazeCanvas.addEventListener('pointermove', e => {
-    const side = activeTouches[e.pointerId]; if (!side || mazeCompleted) return;
-    const rect = mazeCanvas.getBoundingClientRect();
-    const tx = (e.clientX - rect.left) * (mazeCanvas.width / rect.width);
-    const ty = (e.clientY - rect.top) * (mazeCanvas.height / rect.height);
-    const p = side === 'left' ? leftP : rightP;
-
-    const steps = 6;
-    const dx = (tx - p.x) / steps, dy = (ty - p.y) / steps;
-    let blocked = false;
-    for (let s = 0; s < steps; s++) {
-      const movedX = canMoveTo(p.x + dx, p.y);
-      if (movedX) p.x += dx;
-      const movedY = canMoveTo(p.x, p.y + dy);
-      if (movedY) p.y += dy;
-      if (!movedX && !movedY) blocked = true;
-    }
-
-    if (blocked && Date.now() - lastHitSound > 650) {
-      lastHitSound = Date.now();
+    if (choco && Date.now() - mazePenaltyCooldown > 650) {
+      mazePenaltyCooldown = Date.now();
       mazeErrors++;
-      document.getElementById('maze-errors').textContent = '💥 Choques: ' + mazeErrors;
-      playTone(190, 0.14, 'sawtooth');
+      actualizarMarcadorMaze();
+      playTone(180, 0.14, 'sawtooth');
     }
 
-    if (Math.hypot(p.x - goalPos.x, p.y - goalPos.y) < 26) {
-      p.x = goalPos.x; p.y = goalPos.y; p.done = true;
-      delete activeTouches[e.pointerId];
-      mazeHits++;
-      document.getElementById('maze-hits').textContent = '✅ En meta: ' + mazeHits + ' / 2';
-      playTone(659.25, 0.2);
-      document.getElementById('maze-feedback').textContent = '✅ ¡Un pingüino ya llegó al antílope! Falta el otro compañero.';
-    }
+    const metaRadio = currentMazeLvl === 0 ? 46 : (currentMazeLvl === 1 ? 38 : 32);
+    if (Math.hypot(draggingPing.x - goalPos.x, draggingPing.y - goalPos.y) < metaRadio) {
+      draggingPing.done = true;
+      draggingPing = null;
+      actualizarMarcadorMaze();
+      playTone(659.25, 0.25);
 
-    if (leftP.done && rightP.done && !mazeCompleted) {
-      mazeCompleted = true;
-      document.getElementById('maze-feedback').textContent = '🎉 ¡COMPLETADO! Aciertos: 2/2 · Choques: ' + mazeErrors;
-      playSuccessChord();
+      if (pinguinos.every(p => p.done)) {
+        mazeCompleted = true;
+        document.getElementById('maze-feedback').textContent = `🎉 ¡ANTIPÍN RECONSTRUIDO! Choques: ${mazeErrors}`;
+        playSuccessChord();
+      } else {
+        document.getElementById('maze-feedback').textContent = 'Primer pinguino en meta! Ahora lleva al segundo pinguino hasta el antilope.';
+      }
     }
     drawMaze();
-  });
-  mazeCanvas.addEventListener('pointerup', e => { delete activeTouches[e.pointerId]; });
+  }
+
+  function endDragMaze() { draggingPing = null; }
+
+  mazeCanvas.addEventListener('mousedown', startDragMaze);
+  window.addEventListener('mousemove', moveDragMaze);
+  window.addEventListener('mouseup', endDragMaze);
+  mazeCanvas.addEventListener('touchstart', startDragMaze, { passive: false });
+  mazeCanvas.addEventListener('touchmove', moveDragMaze, { passive: false });
+  window.addEventListener('touchend', endDragMaze);
 
   /* MÓDULO 3: DIFERENCIAS SUTILES (CORTES BLANCOS DE GUBIA + ACIERTOS/ERRORES) */
   const diffBoards = [
