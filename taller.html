@@ -568,26 +568,44 @@
   </section>
 
 
-  <!-- MÓDULO 4: MUJER RECOSTADA (7 ETIQUETAS + MATRIZ) -->
+  <!-- MÓDULO 4: MUJER RECOSTADA (10 PARTES EXACTAS DE LA LÁMINA · 2 NIVELES + VOZ + PISTAS) -->
   <section id="screen-mujer" class="screen">
-    <div class="work-area">
-      <div class="artwork-stage" id="mujer-stage">
-        <img id="img-mujer" src="series/mujer_recostada/Mujerrecostada01.png" alt="Mujer reclinada sobre respaldo de sofá">
+    <div style="display:grid; grid-template-columns: 44% 1fr; gap:16px; height:100%; align-items:stretch;">
+      <div class="stage-box" style="flex-direction:column; gap:10px; padding:14px;">
+        <div id="mujer-stage" style="position:relative; display:inline-block; max-height:76%; cursor:pointer;" onclick="checkMujerTouch(event)">
+          <img id="img-mujer" src="series/mujer_recostada/mujer_recostada14.png" alt="Mujer Recostada" style="max-height:58vh; max-width:100%; border-radius:12px; display:block;">
+          <div id="mujer-rings"></div>
+          <div id="mujer-hint-halo" style="display:none; position:absolute; width:64px; height:64px; border:5px dashed #dd6b20; background:rgba(237,137,54,0.25); border-radius:50%; transform:translate(-50%,-50%); pointer-events:none;"></div>
+        </div>
+        <div style="display:flex; gap:10px; flex-wrap:wrap; justify-content:center;">
+          <button id="btn-mujer-voice" class="btn-xl outline" style="padding:8px 14px; font-size:1rem;" onclick="hablarInstruccionMujer()">🔊 Escuchar</button>
+          <button class="btn-xl outline" style="padding:8px 14px; font-size:1rem;" onclick="mostrarPistaMujer()">💡 Pista visual</button>
+        </div>
       </div>
+
       <div class="side-panel">
-        <div>
-          <h2 class="panel-title">Mujer reclinada sobre respaldo de sofá</h2>
-          <p class="panel-subtitle">
-            Toca una etiqueta y luego toca sobre la imagen (o arrástrala) para ubicar cada parte del cuerpo. Observa cómo su cuerpo dibuja la forma del sofá invisible.
-          </p>
-          <div class="tags-pool" id="tags-pool"></div>
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:8px;">
+          <h2 class="panel-title" style="margin:0;">🧍‍♀️ Mujer Recostada</h2>
+          <div style="display:flex; gap:6px;">
+            <button id="btn-mujer-lvl1" class="btn-xl success" style="padding:8px 12px; font-size:0.98rem;" onclick="setMujerLevel(1)">🟢 Nivel 1 (5 + Voz)</button>
+            <button id="btn-mujer-lvl2" class="btn-xl outline" style="padding:8px 12px; font-size:0.98rem;" onclick="setMujerLevel(2)">🟡 Nivel 2 (10 partes)</button>
+          </div>
         </div>
-        <div class="feedback-box" id="mujer-feedback">Selecciona una etiqueta amarilla para colocarla sobre la obra.</div>
-        <div style="display:flex; gap:12px; flex-wrap:wrap;">
-          <button class="btn-xl outline" onclick="toggleEffect('img-mujer', 'mirrored')">🪞 Ver como Matriz Láser</button>
-          <button class="btn-xl outline" onclick="toggleEffect('img-mujer', 'inverted')">🌓 Invertir Blanco/Negro</button>
-          <button class="btn-xl secondary" onclick="resetMujerTags()">🔄 Recoger etiquetas</button>
+
+        <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-bottom:10px;">
+          <span id="mujer-hits" style="font-size:1.1rem; font-weight:800; color:#22543d; background:#c6f6d5; padding:6px 10px; border-radius:10px;">✅ 0 / 5</span>
+          <span id="mujer-errors" style="font-size:1.1rem; font-weight:800; color:#742a2a; background:#fed7d7; padding:6px 10px; border-radius:10px;">❌ 0</span>
+          <button id="btn-mujer-st01" class="btn-xl outline" style="padding:6px 10px; font-size:0.9rem;" onclick="cambiarEstadoMujer('01')">Estampa 01</button>
+          <button id="btn-mujer-st07" class="btn-xl outline" style="padding:6px 10px; font-size:0.9rem;" onclick="cambiarEstadoMujer('07')">Estampa 07</button>
+          <button id="btn-mujer-st14" class="btn-xl success" style="padding:6px 10px; font-size:0.9rem;" onclick="cambiarEstadoMujer('14')">Estampa 14</button>
         </div>
+
+        <p style="font-weight:700; color:#2d3748; margin-bottom:6px;">Toca en la estampa la parte que se pide:</p>
+        <div class="feedback-box" id="mujer-feedback" style="margin-bottom:10px; min-height:74px; font-size:1.25rem;">Cargando...</div>
+
+        <div id="mujer-chips" style="display:flex; flex-wrap:wrap; gap:6px; margin-bottom:12px;"></div>
+
+        <button class="btn-xl secondary" onclick="resetMujer()">🔄 Volver a empezar</button>
       </div>
     </div>
   </section>
@@ -862,7 +880,8 @@
     if (name === 'laberinto') initMaze();    if (name === 'diferencias') initDiffGame();
 if (name === 'antipin') resetAntipin();
 
-    if (name === 'mujer') initMujerTags();
+           if (name === 'mujer') resetMujer();
+
     if (name === 'zooformes') setupPuzzle(2);
     if (name === 'laser') initLaserCanvas();
   }
@@ -1457,70 +1476,182 @@ if (name === 'antipin') resetAntipin();
   }
 
 
-  /* MÓDULO 4: MUJER RECOSTADA (COORDENADAS CORREGIDAS EN ZONA BLANCA) */
-  const mujerZones = [
-    { text: 'COLETERO EN EL PELO', x: 16, y: 17 },
-    { text: 'CARA / CUELLO', x: 24, y: 31 },
-    { text: 'HOMBRO', x: 38, y: 45 },
-    { text: 'ESPALDA', x: 56, y: 50 },
-    { text: 'CULO', x: 82, y: 63 },
-    { text: 'CODO', x: 22, y: 80 },
+   /* MÓDULO 4: MUJER RECOSTADA (10 ZONAS EXACTAS DE LA LÁMINA · VOZ · PISTAS PROGRESIVAS) */
+  let mujerLevel = 1;
+  let mujerQueue = new Array();
+  let mujerStep = 0;
+  let mujerHits = 0;
+  let mujerErrors = 0;
+  let mujerConsecutiveErrors = 0;
 
-    { text: 'MANO DE BRAZO DERECHO AGARRA MUÑECA DEL BRAZO IZQUIERDO', x: 20, y: 63 }
-  ];
-  let selectedZone = null, mujerSolved = 0;
+  // Coordenadas exactas (%) tomadas de las 10 flechas de tu estampa
+  const ZONAS_MUJER = {
+    cara:       { x: 24, y: 24, r: 11, label: "Cara" },
+    coletero:   { x: 40, y: 21, r: 10, label: "Coletero en el pelo" },
+    cuello:     { x: 36, y: 34, r: 10, label: "Cuello" },
+    hombro:     { x: 42, y: 45, r: 11, label: "Hombro" },
+    brazo_der:  { x: 23, y: 55, r: 11, label: "Brazo derecho" },
+    mano_der:   { x: 18, y: 74, r: 11, label: "Mano derecha" },
+    brazo_izq:  { x: 43, y: 71, r: 11, label: "Brazo izquierdo" },
+    codo:       { x: 56, y: 77, r: 11, label: "Codo" },
+    espalda:    { x: 57, y: 44, r: 13, label: "Espalda" },
+    culo:       { x: 78, y: 58, r: 13, label: "Culo" }
+  };
 
-  function initMujerTags() {
-    const pool = document.getElementById('tags-pool'); pool.innerHTML = '';
-    document.querySelectorAll('.placed-tag').forEach(t => t.remove());
-    selectedZone = null; mujerSolved = 0;
-    mujerZones.forEach((z, idx) => {
-      const btn = document.createElement('button'); btn.className = 'drag-tag';
-      btn.id = 'mtag-btn-' + idx; btn.textContent = z.text;
-      btn.onclick = () => {
-        if (btn.disabled) return;
-        selectedZone = { ...z, idx };
-        document.querySelectorAll('.drag-tag').forEach(b => b.style.outline = 'none');
-        btn.style.outline = '4px solid #2b6cb0';
-        document.getElementById('mujer-feedback').textContent = 'Toca sobre la estampa dónde está: "' + z.text + '"';
-        playTone(523.25, 0.15);
-      };
-      pool.appendChild(btn);
+  // Nivel 1: 5 partes básicas con voz automática y sin izquierda/derecha
+  const MUJER_LVL1 = new Array(
+    { text: "Toca la CARA", voice: "Toca la cara", key: "cara" },
+    { text: "Toca el COLETERO en el pelo", voice: "Toca el coletero en el pelo", key: "coletero" },
+    { text: "Toca el HOMBRO", voice: "Toca el hombro", key: "hombro" },
+    { text: "Toca la ESPALDA", voice: "Toca la espalda", key: "espalda" },
+    { text: "Toca el CULO", voice: "Toca el culo", key: "culo" }
+  );
+
+  // Nivel 2: Las 10 partes completas de tu lámina en modo lectura (sin voz automática)
+  const MUJER_LVL2 = new Array(
+    { text: "Toca la CARA", key: "cara" },
+    { text: "Toca el COLETERO en el pelo", key: "coletero" },
+    { text: "Toca el CUELLO", key: "cuello" },
+    { text: "Toca el HOMBRO", key: "hombro" },
+    { text: "Toca el BRAZO DERECHO", key: "brazo_der" },
+    { text: "Toca la MANO DERECHA", key: "mano_der" },
+    { text: "Toca el BRAZO IZQUIERDO", key: "brazo_izq" },
+    { text: "Toca el CODO", key: "codo" },
+    { text: "Toca la ESPALDA", key: "espalda" },
+    { text: "Toca el CULO", key: "culo" }
+  );
+
+  function hablarMujer(texto) {
+    if (!soundEnabled || mujerLevel !== 1 || !('speechSynthesis' in window)) return;
+    window.speechSynthesis.cancel();
+    const msg = new SpeechSynthesisUtterance(texto);
+    msg.lang = 'es-ES';
+    msg.rate = 0.92;
+    window.speechSynthesis.speak(msg);
+  }
+
+  function hablarInstruccionMujer() {
+    if (mujerStep < mujerQueue.length) {
+      window.speechSynthesis.cancel();
+      const item = mujerQueue.at(mujerStep);
+      const msg = new SpeechSynthesisUtterance(item.voice || item.text);
+      msg.lang = 'es-ES';
+      msg.rate = 0.92;
+      window.speechSynthesis.speak(msg);
+    }
+  }
+
+  function setMujerLevel(lvl) {
+    mujerLevel = lvl;
+    document.getElementById('btn-mujer-lvl1').className = lvl === 1 ? 'btn-xl success' : 'btn-xl outline';
+    document.getElementById('btn-mujer-lvl2').className = lvl === 2 ? 'btn-xl success' : 'btn-xl outline';
+    const bv = document.getElementById('btn-mujer-voice');
+    if (bv) bv.style.visibility = lvl === 1 ? 'visible' : 'hidden';
+    resetMujer();
+  }
+
+  function cambiarEstadoMujer(num) {
+    document.getElementById('img-mujer').src = `series/mujer_recostada/mujer_recostada${num}.png`;
+    document.getElementById('btn-mujer-st01').className = num === '01' ? 'btn-xl success' : 'btn-xl outline';
+    document.getElementById('btn-mujer-st07').className = num === '07' ? 'btn-xl success' : 'btn-xl outline';
+    document.getElementById('btn-mujer-st14').className = num === '14' ? 'btn-xl success' : 'btn-xl outline';
+    playTone(523.25, 0.12);
+  }
+
+  function mostrarPistaMujer() {
+    if (mujerStep >= mujerQueue.length) return;
+    const item = mujerQueue.at(mujerStep);
+    const z = ZONAS_MUJER[item.key];
+    const halo = document.getElementById('mujer-hint-halo');
+    halo.style.left = z.x + '%';
+    halo.style.top = z.y + '%';
+    halo.style.display = 'block';
+    playTone(587.33, 0.18);
+  }
+
+  function ocultarPistaMujer() {
+    const halo = document.getElementById('mujer-hint-halo');
+    if (halo) halo.style.display = 'none';
+  }
+
+  function dibujarAroMujer(xPct, yPct) {
+    const ring = document.createElement('div');
+    ring.style.cssText = `position:absolute; left:${xPct}%; top:${yPct}%; width:42px; height:42px; border:5px solid #2f855a; border-radius:50%; transform:translate(-50%,-50%); pointer-events:none; box-shadow:0 0 0 3px #fff;`;
+    document.getElementById('mujer-rings').appendChild(ring);
+  }
+
+  function renderMujerChips() {
+    const cont = document.getElementById('mujer-chips');
+    cont.innerHTML = '';
+    mujerQueue.forEach((it, idx) => {
+      const sp = document.createElement('span');
+      const done = idx < mujerStep;
+      const curr = idx === mujerStep;
+      sp.textContent = (done ? 'OK ' : (curr ? '-> ' : '• ')) + ZONAS_MUJER[it.key].label;
+      sp.style.cssText = `padding:5px 10px; border-radius:8px; font-weight:700; font-size:0.92rem; background:${done ? '#c6f6d5' : (curr ? '#feebc8' : '#edf2f7')}; color:${done ? '#22543d' : (curr ? '#9c4221' : '#4a5568')}; border:2px solid ${curr ? '#dd6b20' : 'transparent'};`;
+      cont.appendChild(sp);
     });
   }
 
-  document.getElementById('mujer-stage').addEventListener('pointerdown', e => {
-    if (!selectedZone || e.target.classList.contains('placed-tag')) return;
-    const img = document.getElementById('img-mujer'), rect = img.getBoundingClientRect();
-    let clickX = ((e.clientX - rect.left) / rect.width) * 100;
-    const clickY = ((e.clientY - rect.top) / rect.height) * 100;
-    if (img.classList.contains('mirrored')) clickX = 100 - clickX;
+  function checkMujerTouch(e) {
+    if (mujerStep >= mujerQueue.length) return;
+    const img = document.getElementById('img-mujer');
+    const rect = img.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width) * 100;
+    const y = ((e.clientY - rect.top) / rect.height) * 100;
 
-    if (Math.hypot(clickX - selectedZone.x, clickY - selectedZone.y) <= 14) {
-      const stage = document.getElementById('mujer-stage'), sRect = stage.getBoundingClientRect();
-      const tag = document.createElement('div'); tag.className = 'placed-tag'; tag.textContent = selectedZone.text;
-      tag.style.left = (e.clientX - sRect.left - 65) + 'px'; tag.style.top = (e.clientY - sRect.top - 22) + 'px';
-      stage.appendChild(tag);
-      const usedBtn = document.getElementById('mtag-btn-' + selectedZone.idx);
-      usedBtn.disabled = true; usedBtn.style.opacity = '0.35'; usedBtn.style.outline = 'none';
-      selectedZone = null; mujerSolved++;
-      if (mujerSolved === mujerZones.length) {
-        document.getElementById('mujer-feedback').textContent = '🎉 ¡COMPLETADO! Ya veis cómo su cuerpo dibuja la forma del sofá invisible.';
-        playSuccessChord();
-      } else {
-        document.getElementById('mujer-feedback').textContent = '✅ ¡Muy bien! Lleváis ' + mujerSolved + ' de 7 etiquetas.';
+    const item = mujerQueue.at(mujerStep);
+    const z = ZONAS_MUJER[item.key];
+    const ok = Math.hypot(x - z.x, y - z.y) <= z.r;
+
+    if (ok) {
+      mujerHits++;
+      mujerStep++;
+      mujerConsecutiveErrors = 0;
+      ocultarPistaMujer();
+      dibujarAroMujer(z.x, z.y);
+      renderMujerChips();
+      document.getElementById('mujer-hits').textContent = `Aciertos: ${mujerHits} / ${mujerQueue.length}`;
+
+      if (mujerStep < mujerQueue.length) {
+        const sig = mujerQueue.at(mujerStep);
+        document.getElementById('mujer-feedback').textContent = sig.text;
         playTone(659.25, 0.22);
+        if (mujerLevel === 1) hablarMujer(sig.voice);
+      } else {
+        document.getElementById('mujer-feedback').textContent = `COMPLETADO! Aciertos: ${mujerHits}/${mujerQueue.length} · Errores: ${mujerErrors}`;
+        if (mujerLevel === 1) hablarMujer("Muy bien! Has completado todas las partes.");
+        playSuccessChord();
       }
     } else {
+      mujerErrors++;
+      mujerConsecutiveErrors++;
+      document.getElementById('mujer-errors').textContent = `Errores: ${mujerErrors}`;
       playTone(220, 0.2, 'sawtooth');
-      document.getElementById('mujer-feedback').textContent = '❌ Ahí no está "' + selectedZone.text + '". ¡Fijaos bien y probad en otro sitio!';
+      if (mujerConsecutiveErrors >= 2) {
+        mostrarPistaMujer();
+        if (mujerLevel === 1) hablarMujer("Mira la marca naranja de ayuda");
+      } else if (mujerLevel === 1) {
+        hablarMujer("Inténtalo de nuevo");
+      }
     }
-  });
+  }
 
-  function resetMujerTags() {
-    initMujerTags();
-    document.getElementById('mujer-feedback').textContent = 'Etiquetas recogidas. ¡Volved a empezar!';
-    playTone(392, 0.15);
+  function resetMujer() {
+    const base = mujerLevel === 1 ? MUJER_LVL1 : MUJER_LVL2;
+    mujerQueue = base.slice().sort(() => Math.random() - 0.5);
+    mujerStep = 0;
+    mujerHits = 0;
+    mujerErrors = 0;
+    mujerConsecutiveErrors = 0;
+    ocultarPistaMujer();
+    document.getElementById('mujer-rings').innerHTML = '';
+    document.getElementById('mujer-hits').textContent = `Aciertos: 0 / ${mujerQueue.length}`;
+    document.getElementById('mujer-errors').textContent = 'Errores: 0';
+    const primero = mujerQueue.at(0);
+    document.getElementById('mujer-feedback').textContent = primero.text;
+    renderMujerChips();
+    if (mujerLevel === 1) hablarMujer(primero.voice);
   }
 
 
