@@ -595,9 +595,7 @@
         <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-bottom:10px;">
           <span id="mujer-hits" style="font-size:1.1rem; font-weight:800; color:#22543d; background:#c6f6d5; padding:6px 10px; border-radius:10px;">✅ 0 / 5</span>
           <span id="mujer-errors" style="font-size:1.1rem; font-weight:800; color:#742a2a; background:#fed7d7; padding:6px 10px; border-radius:10px;">❌ 0</span>
-          <button id="btn-mujer-st01" class="btn-xl outline" style="padding:6px 10px; font-size:0.9rem;" onclick="cambiarEstadoMujer('01')">Estampa 01</button>
-          <button id="btn-mujer-st07" class="btn-xl outline" style="padding:6px 10px; font-size:0.9rem;" onclick="cambiarEstadoMujer('07')">Estampa 07</button>
-          <button id="btn-mujer-st14" class="btn-xl success" style="padding:6px 10px; font-size:0.9rem;" onclick="cambiarEstadoMujer('14')">Estampa 14</button>
+         
         </div>
 
         <p style="font-weight:700; color:#2d3748; margin-bottom:6px;">Toca en la estampa la parte que se pide:</p>
@@ -1486,19 +1484,20 @@ if (name === 'antipin') resetAntipin();
 
  
 
-   // Coordenadas exactas (%) tomadas de las 10 flechas de tu estampa
+   // Coordenadas exactas (%) medidas sobre las 10 marcas rojas de Mujerrecostada14.png
   const ZONAS_MUJER = {
-    cara:       { x: 25, y: 24, r: 9,  label: "Cara" },
-    coletero:   { x: 38, y: 27, r: 8,  label: "Coletero en el pelo" },
-    cuello:     { x: 34, y: 39, r: 9,  label: "Cuello" },
-    hombro:     { x: 34, y: 50, r: 9,  label: "Hombro" },
-    brazo_der:  { x: 21, y: 39, r: 9,  label: "Brazo derecho" },
-    mano_der:   { x: 13, y: 69, r: 9,  label: "Mano derecha" },
-    brazo_izq:  { x: 24, y: 74, r: 9,  label: "Brazo izquierdo" },
-    codo:       { x: 34, y: 83, r: 9,  label: "Codo" },
-    espalda:    { x: 56, y: 50, r: 12, label: "Espalda" },
-    culo:       { x: 78, y: 58, r: 12, label: "Culo" }
+    cara:       { x: 22, y: 23, r: 8,  label: "Cara" },
+    coletero:   { x: 43, y: 22, r: 7,  label: "Coletero en el pelo" },
+    cuello:     { x: 28, y: 36, r: 7,  label: "Cuello" },
+    hombro:     { x: 30, y: 50, r: 9,  label: "Hombro" },
+    brazo_der:  { x: 20, y: 56, r: 8,  label: "Brazo derecho" },
+    mano_der:   { x: 11, y: 69, r: 8,  label: "Mano derecha" },
+    brazo_izq:  { x: 21, y: 74, r: 8,  label: "Brazo izquierdo" },
+    codo:       { x: 25, y: 80, r: 8,  label: "Codo" },
+    espalda:    { x: 54, y: 47, r: 11, label: "Espalda" },
+    culo:       { x: 73, y: 47, r: 11, label: "Culo" }
   };
+
 
   // Nivel 1: 5 partes básicas con voz automática y sin izquierda/derecha
   const MUJER_LVL1 = [
