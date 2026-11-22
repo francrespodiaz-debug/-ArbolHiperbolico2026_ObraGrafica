@@ -457,7 +457,7 @@
     </div>
   </section>
 
-  <!-- MÓDULO 1: ANTIPÍN (ADAPTADO CON VOZ, SIN LATERALIDAD EN NIVEL 1 Y NIVEL 2) -->
+   <!-- MÓDULO 1: ANTIPÍN (12 PARTES REALES · NIVEL 1 CON VOZ / NIVEL 2 LECTURA+LATERALIDAD · TANDAS AL AZAR) -->
   <section id="screen-antipin" class="screen">
     <div class="two-col">
       <div class="stage-box" style="flex-direction:column; gap:12px; padding:16px;">
@@ -466,37 +466,43 @@
           <div id="antipin-rings"></div>
         </div>
         <div style="display:flex; gap:12px; flex-wrap:wrap; justify-content:center;">
-          <button class="btn-xl outline" onclick="toggleAntipinInvert()">🌓 Invertir Blanco/Negro (Pista)</button>
-          <button class="btn-xl outline" onclick="hablarInstruccionAntipin()">🔊 Escuchar instrucción</button>
+          <button class="btn-xl outline" onclick="toggleAntipinInvert()">🌓 Invertir Blanco/Negro</button>
+          <button id="btn-anti-voice" class="btn-xl outline" onclick="hablarInstruccionAntipin()">🔊 Escuchar instrucción</button>
         </div>
       </div>
 
       <div class="side-panel">
-        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:10px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:8px;">
           <h2 class="panel-title" style="margin:0;">👁️ ¿Qué ves en Antipín?</h2>
-          <div style="display:flex; gap:8px;">
-            <button id="btn-anti-lvl1" class="btn-xl success" style="padding:10px 14px; font-size:1.05rem;" onclick="setAntipinLevel(1)">🟢 Nivel 1 (Visual)</button>
-            <button id="btn-anti-lvl2" class="btn-xl outline" style="padding:10px 14px; font-size:1.05rem;" onclick="setAntipinLevel(2)">🟡 Nivel 2 (Reto)</button>
+          <div style="display:flex; gap:6px;">
+            <button id="btn-anti-lvl1" class="btn-xl success" style="padding:8px 12px; font-size:1rem;" onclick="setAntipinLevel(1)">🟢 Nivel 1 (Voz)</button>
+            <button id="btn-anti-lvl2" class="btn-xl outline" style="padding:8px 12px; font-size:1rem;" onclick="setAntipinLevel(2)">🟡 Nivel 2 (Lectura + Izq/Der)</button>
           </div>
         </div>
 
-        <div style="display:flex; gap:10px; margin-bottom:10px; flex-wrap:wrap;">
-          <span id="antipin-hits" style="font-size:1.2rem; font-weight:800; color:#22543d; background:#c6f6d5; padding:6px 12px; border-radius:10px;">✅ Aciertos: 0 / 4</span>
-          <span id="antipin-errors" style="font-size:1.2rem; font-weight:800; color:#742a2a; background:#fed7d7; padding:6px 12px; border-radius:10px;">❌ Errores: 0</span>
+        <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-bottom:10px;">
+          <strong style="font-size:1rem; color:#4a5568;">Tanda:</strong>
+          <button id="btn-anti-len3" class="btn-xl success" style="padding:6px 12px; font-size:0.95rem;" onclick="setAntipinLength(3)">3 partes</button>
+          <button id="btn-anti-len6" class="btn-xl outline" style="padding:6px 12px; font-size:0.95rem;" onclick="setAntipinLength(6)">6 partes</button>
+          <button id="btn-anti-len12" class="btn-xl outline" style="padding:6px 12px; font-size:0.95rem;" onclick="setAntipinLength(12)">12 partes</button>
+          <span id="antipin-hits" style="font-size:1.1rem; font-weight:800; color:#22543d; background:#c6f6d5; padding:6px 10px; border-radius:10px;">✅ 0 / 3</span>
+          <span id="antipin-errors" style="font-size:1.1rem; font-weight:800; color:#742a2a; background:#fed7d7; padding:6px 10px; border-radius:10px;">❌ 0</span>
         </div>
 
-        <p style="font-weight:700; color:#2d3748; margin-bottom:6px;">1. Toca qué figura viste primero:</p>
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:12px;">
-          <button class="choice-btn" style="padding:10px; font-size:1.05rem;" onclick="setAntipinFirstView(this, 'Pingüinos (negro)')">🐧 Pingüinos</button>
-          <button class="choice-btn" style="padding:10px; font-size:1.05rem;" onclick="setAntipinFirstView(this, 'Antílope (blanco)')">🦌 Antílope</button>
-          <button class="choice-btn" style="padding:10px; font-size:1.05rem;" onclick="setAntipinFirstView(this, 'Los dos a la vez')">👀 Los dos</button>
-          <button class="choice-btn" style="padding:10px; font-size:1.05rem;" onclick="setAntipinFirstView(this, 'Manchas / Formas')">✨ Formas</button>
+        <p style="font-weight:700; color:#2d3748; margin-bottom:6px; font-size:0.98rem;">1. ¿Qué figura viste primero?</p>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-bottom:10px;">
+          <button class="choice-btn" style="padding:8px; font-size:1rem;" onclick="setAntipinFirstView(this, 'Pingüinos (negro)')">🐧 Pingüinos</button>
+          <button class="choice-btn" style="padding:8px; font-size:1rem;" onclick="setAntipinFirstView(this, 'Antílope (blanco)')">🦌 Antílope</button>
+          <button class="choice-btn" style="padding:8px; font-size:1rem;" onclick="setAntipinFirstView(this, 'Los dos a la vez')">👀 Los dos</button>
+          <button class="choice-btn" style="padding:8px; font-size:1rem;" onclick="setAntipinFirstView(this, 'Formas abstractas')">✨ Formas</button>
         </div>
 
-        <p style="font-weight:700; color:#2d3748; margin-bottom:6px;">2. Busca y toca en el dibujo:</p>
-        <div class="feedback-box" id="antipin-feedback" style="margin-bottom:12px; min-height:82px; font-size:1.3rem;">🐧 Toca uno de los dos pingüinos negros.</div>
+        <p style="font-weight:700; color:#2d3748; margin-bottom:6px; font-size:0.98rem;">2. Busca y toca en el grabado:</p>
+        <div class="feedback-box" id="antipin-feedback" style="margin-bottom:10px; min-height:78px; font-size:1.25rem;">Cargando tanda...</div>
 
-        <button class="btn-xl secondary" onclick="resetAntipin()">🔄 Volver a empezar</button>
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+          <button class="btn-xl primary" onclick="resetAntipin()">🎲 Nueva tanda al azar</button>
+        </div>
       </div>
     </div>
   </section>
@@ -851,6 +857,7 @@
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     document.getElementById('screen-' + name).classList.add('active');
     if (name === 'laberinto') initMaze();    if (name === 'diferencias') initDiffGame();
+if (name === 'antipin') resetAntipin();
 
     if (name === 'mujer') initMujerTags();
     if (name === 'zooformes') setupPuzzle(2);
@@ -871,31 +878,61 @@
     document.getElementById(imgId).classList.toggle(className);
   }
 
-  /* MÓDULO 1: ANTIPÍN ADAPTADO (VOZ, NIVEL 1 SIN LATERALIDAD Y NIVEL 2 RETO) */
+   /* MÓDULO 1: ANTIPÍN (12 PARTES REALES · TANDAS AL AZAR · NIVEL 1 VOZ / NIVEL 2 LECTURA+IZQ/DER) */
   let antipinLevel = 1;
+  let antipinLength = 3;
+  let antipinQueue = [];
   let antipinStep = 0;
   let antipinHits = 0;
   let antipinErrors = 0;
   let antipinFirstView = "No seleccionada";
   let antipinInverted = false;
-  let foundPingLeft = false, foundPingRight = false;
 
-  const antipinStepsLvl2 = [
-    { text: "🦌 Toca la cabeza o los cuernos del antílope blanco.", voice: "Toca la cabeza o los cuernos del antílope blanco", target: "antelope_head" },
-    { text: "🐧 Toca el pingüino negro de la izquierda.", voice: "Toca el pingüino negro de la izquierda", target: "ping_left" },
-    { text: "🦌 Toca el cuerpo del antílope en el centro blanco.", voice: "Toca el cuerpo del antílope en el centro blanco", target: "antelope_body" },
-    { text: "🐧 Toca el pingüino negro de la derecha.", voice: "Toca el pingüino negro de la derecha", target: "ping_right" }
+  // Coordenadas exactas (%) tomadas de las 12 etiquetas de tu estampa 2/20
+  const ZONAS_ANTIPIN = {
+    cuerno_izq:  { x: 35, y: 18, r: 13 },
+    cuerno_der:  { x: 65, y: 18, r: 13 },
+    oreja_izq:   { x: 25, y: 27, r: 12 },
+    oreja_der:   { x: 75, y: 27, r: 12 },
+    frente:      { x: 50, y: 31, r: 14 },
+    ping_izq:    { x: 30, y: 50, r: 15 },
+    ping_der:    { x: 70, y: 50, r: 15 },
+    aleta_izq:   { x: 16, y: 63, r: 13 },
+    aleta_der:   { x: 84, y: 63, r: 13 },
+    pie_izq:     { x: 24, y: 86, r: 13 },
+    pie_der:     { x: 76, y: 86, r: 13 },
+    hocico:      { x: 50, y: 81, r: 14 }
+  };
+
+  // Nivel 1: 7 conceptos distintos (sin izquierda/derecha, admite ambos lados y tiene voz)
+  const BANCO_LVL1 = [
+    { text: "🦌 Toca un cuerno del antílope", voice: "Toca un cuerno del antílope", zones: ["cuerno_izq", "cuerno_der"] },
+    { text: "🦌 Toca una oreja del antílope", voice: "Toca una oreja del antílope", zones: ["oreja_izq", "oreja_der"] },
+    { text: "🦌 Toca la frente del antílope en el centro", voice: "Toca la frente del antílope en el centro", zones: ["frente"] },
+    { text: "🦌 Toca el hocico del antílope abajo", voice: "Toca el hocico del antílope abajo", zones: ["hocico"] },
+    { text: "🐧 Toca un pingüino", voice: "Toca un pingüino", zones: ["ping_izq", "ping_der"] },
+    { text: "🐧 Toca la aleta de un pingüino", voice: "Toca la aleta de un pingüino", zones: ["aleta_izq", "aleta_der"] },
+    { text: "🐧 Toca el pie de un pingüino abajo", voice: "Toca el pie de un pingüino abajo", zones: ["pie_izq", "pie_der"] }
   ];
 
-  const antipinStepsLvl1 = [
-    { text: "🐧 Toca uno de los dos pingüinos negros.", voice: "Toca uno de los dos pingüinos negros", target: "any_ping_1" },
-    { text: "🦌 Toca el antílope blanco del centro.", voice: "Toca el antílope blanco del centro", target: "any_antelope" },
-    { text: "🐧 Ahora toca el otro pingüino negro.", voice: "Ahora toca el otro pingüino negro", target: "any_ping_2" },
-    { text: "🦌 Toca los cuernos del antílope arriba.", voice: "Toca los cuernos del antílope arriba", target: "antelope_head" }
+  // Nivel 2: Las 12 partes exactas con lateralidad izquierda/derecha y solo texto escrito (sin voz automática)
+  const BANCO_LVL2 = [
+    { text: "🦌 Toca el CUERNO IZQUIERDO del antílope", zones: ["cuerno_izq"] },
+    { text: "🦌 Toca el CUERNO DERECHO del antílope", zones: ["cuerno_der"] },
+    { text: "🦌 Toca la OREJA IZQUIERDA del antílope", zones: ["oreja_izq"] },
+    { text: "🦌 Toca la OREJA DERECHA del antílope", zones: ["oreja_der"] },
+    { text: "🦌 Toca la FRENTE del antílope", zones: ["frente"] },
+    { text: "🦌 Toca el HOCICO del antílope", zones: ["hocico"] },
+    { text: "🐧 Toca el PINGÜINO IZQUIERDO", zones: ["ping_izq"] },
+    { text: "🐧 Toca el PINGÜINO DERECHO", zones: ["ping_der"] },
+    { text: "🐧 Toca la ALETA IZQUIERDA del pingüino", zones: ["aleta_izq"] },
+    { text: "🐧 Toca la ALETA DERECHA del pingüino", zones: ["aleta_der"] },
+    { text: "🐧 Toca el PIE IZQUIERDO del pingüino", zones: ["pie_izq"] },
+    { text: "🐧 Toca el PIE DERECHO del pingüino", zones: ["pie_der"] }
   ];
 
   function hablarTexto(texto) {
-    if (!soundEnabled || !('speechSynthesis' in window)) return;
+    if (!soundEnabled || antipinLevel !== 1 || !('speechSynthesis' in window)) return;
     window.speechSynthesis.cancel();
     const msg = new SpeechSynthesisUtterance(texto);
     msg.lang = 'es-ES';
@@ -904,14 +941,28 @@
   }
 
   function hablarInstruccionAntipin() {
-    const lista = antipinLevel === 1 ? antipinStepsLvl1 : antipinStepsLvl2;
-    if (antipinStep < lista.length) hablarTexto(lista[antipinStep].voice);
+    if (antipinStep < antipinQueue.length) {
+      window.speechSynthesis.cancel();
+      const msg = new SpeechSynthesisUtterance(antipinQueue[antipinStep].voice || antipinQueue[antipinStep].text);
+      msg.lang = 'es-ES';
+      msg.rate = 0.92;
+      window.speechSynthesis.speak(msg);
+    }
   }
 
   function setAntipinLevel(lvl) {
     antipinLevel = lvl;
     document.getElementById('btn-anti-lvl1').className = lvl === 1 ? 'btn-xl success' : 'btn-xl outline';
     document.getElementById('btn-anti-lvl2').className = lvl === 2 ? 'btn-xl success' : 'btn-xl outline';
+    document.getElementById('btn-anti-voice').style.display = lvl === 1 ? 'inline-block' : 'none';
+    resetAntipin();
+  }
+
+  function setAntipinLength(len) {
+    antipinLength = len;
+    [3, 6, 12].forEach(n => {
+      document.getElementById('btn-anti-len' + n).className = (n === len) ? 'btn-xl success' : 'btn-xl outline';
+    });
     resetAntipin();
   }
 
@@ -930,73 +981,57 @@
 
   function dibujarAroAntipin(xPct, yPct) {
     const ring = document.createElement('div');
-    ring.style.cssText = `position:absolute; left:${xPct}%; top:${yPct}%; width:48px; height:48px; border:5px solid #2f855a; border-radius:50%; transform:translate(-50%,-50%); pointer-events:none; box-shadow:0 0 0 3px #fff;`;
+    ring.style.cssText = `position:absolute; left:${xPct}%; top:${yPct}%; width:46px; height:46px; border:5px solid #2f855a; border-radius:50%; transform:translate(-50%,-50%); pointer-events:none; box-shadow:0 0 0 3px #fff;`;
     document.getElementById('antipin-rings').appendChild(ring);
   }
 
   function checkAntipinTouch(e) {
-    const lista = antipinLevel === 1 ? antipinStepsLvl1 : antipinStepsLvl2;
-    if (antipinStep >= lista.length) return;
-
+    if (antipinStep >= antipinQueue.length) return;
     const img = document.getElementById('img-antipin');
     const rect = img.getBoundingClientRect();
     const x = ((e.clientX - rect.left) / rect.width) * 100;
     const y = ((e.clientY - rect.top) / rect.height) * 100;
 
-    // Zonas reales de Antipín en porcentaje
-    const inPingLeft = (x >= 10 && x <= 38 && y >= 25 && y <= 88);
-    const inPingRight = (x >= 62 && x <= 90 && y >= 25 && y <= 88);
-    const inAntelopeHead = (x >= 30 && x <= 70 && y >= 10 && y <= 45);
-    const inAntelopeBody = (x >= 35 && x <= 65 && y >= 35 && y <= 85);
-
-    const target = lista[antipinStep].target;
-    let ok = false;
-
-    if (target === "ping_left" && inPingLeft) ok = true;
-    else if (target === "ping_right" && inPingRight) ok = true;
-    else if (target === "antelope_head" && inAntelopeHead) ok = true;
-    else if (target === "antelope_body" && inAntelopeBody) ok = true;
-    else if (target === "any_ping_1" && (inPingLeft || inPingRight)) {
-      ok = true;
-      if (inPingLeft) foundPingLeft = true; else foundPingRight = true;
-    } else if (target === "any_ping_2") {
-      if ((foundPingLeft && inPingRight) || (foundPingRight && inPingLeft)) ok = true;
-    } else if (target === "any_antelope" && (inAntelopeHead || inAntelopeBody)) ok = true;
+    const item = antipinQueue[antipinStep];
+    const ok = item.zones.some(zKey => {
+      const z = ZONAS_ANTIPIN[zKey];
+      return Math.hypot(x - z.x, y - z.y) <= z.r;
+    });
 
     if (ok) {
       antipinHits++;
       antipinStep++;
       dibujarAroAntipin(x, y);
-      document.getElementById('antipin-hits').textContent = `✅ Aciertos: ${antipinHits} / 4`;
-      if (antipinStep < lista.length) {
-        document.getElementById('antipin-feedback').textContent = lista[antipinStep].text;
+      document.getElementById('antipin-hits').textContent = `✅ ${antipinHits} / ${antipinQueue.length}`;
+      if (antipinStep < antipinQueue.length) {
+        document.getElementById('antipin-feedback').textContent = antipinQueue[antipinStep].text;
         playTone(659.25, 0.22);
-        hablarTexto(lista[antipinStep].voice);
+        if (antipinLevel === 1) hablarTexto(antipinQueue[antipinStep].voice);
       } else {
-        document.getElementById('antipin-feedback').textContent = `🎉 ¡COMPLETADO! Aciertos: 4/4 · Errores: ${antipinErrors}`;
-        hablarTexto("¡Muy bien! Has encontrado todas las figuras.");
+        document.getElementById('antipin-feedback').textContent = `🎉 ¡TANDA COMPLETADA! Aciertos: ${antipinHits}/${antipinQueue.length} · Errores: ${antipinErrors}`;
+        if (antipinLevel === 1) hablarTexto("¡Muy bien! Tanda completada.");
         playSuccessChord();
       }
     } else {
       antipinErrors++;
-      document.getElementById('antipin-errors').textContent = `❌ Errores: ${antipinErrors}`;
+      document.getElementById('antipin-errors').textContent = `❌ ${antipinErrors}`;
       playTone(220, 0.2, 'sawtooth');
-      hablarTexto("Inténtalo de nuevo");
+      if (antipinLevel === 1) hablarTexto("Inténtalo de nuevo");
     }
   }
 
   function resetAntipin() {
+    const banco = antipinLevel === 1 ? [...BANCO_LVL1] : [...BANCO_LVL2];
+    const total = Math.min(antipinLength, banco.length);
+    antipinQueue = banco.sort(() => Math.random() - 0.5).slice(0, total);
     antipinStep = 0;
     antipinHits = 0;
     antipinErrors = 0;
-    foundPingLeft = false;
-    foundPingRight = false;
     document.getElementById('antipin-rings').innerHTML = '';
-    document.getElementById('antipin-hits').textContent = '✅ Aciertos: 0 / 4';
-    document.getElementById('antipin-errors').textContent = '❌ Errores: 0';
-    const lista = antipinLevel === 1 ? antipinStepsLvl1 : antipinStepsLvl2;
-    document.getElementById('antipin-feedback').textContent = lista[0].text;
-    hablarTexto(lista[0].voice);
+    document.getElementById('antipin-hits').textContent = `✅ 0 / ${total}`;
+    document.getElementById('antipin-errors').textContent = '❌ 0';
+    document.getElementById('antipin-feedback').textContent = antipinQueue[0].text;
+    if (antipinLevel === 1) hablarTexto(antipinQueue[0].voice);
   }
 
  
