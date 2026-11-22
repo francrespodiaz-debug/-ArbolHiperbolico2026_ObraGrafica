@@ -459,7 +459,8 @@
 
    <!-- MÓDULO 1: ANTIPÍN (12 PARTES REALES · NIVEL 1 CON VOZ / NIVEL 2 LECTURA+LATERALIDAD · TANDAS AL AZAR) -->
   <section id="screen-antipin" class="screen">
-    <div class="two-col">
+   <div style="display:grid; grid-template-columns: 38% 1fr; gap:16px; height:100%; align-items:stretch;">
+
       <div class="stage-box" style="flex-direction:column; gap:12px; padding:16px;">
         <div id="antipin-stage" style="position:relative; display:inline-block; max-height:80%; cursor:pointer;" onclick="checkAntipinTouch(event)">
           <img id="img-antipin" src="series/antipin/Antipin002.png" alt="Antipín" style="max-height:60vh; max-width:100%; border-radius:12px; display:block; transition:filter 0.3s;">
@@ -897,8 +898,9 @@ if (name === 'antipin') resetAntipin();
     frente:      { x: 50, y: 35, r: 12 },
     ping_izq:    { x: 30, y: 55, r: 13 },
     ping_der:    { x: 70, y: 55, r: 13 },
-    aleta_izq:   { x: 16, y: 65, r: 11 },
-    aleta_der:   { x: 84, y: 65, r: 11 },
+       aleta_izq:   { x: 22, y: 62, r: 9 },
+    aleta_der:   { x: 78, y: 62, r: 9 },
+
     pie_izq:     { x: 24, y: 86, r: 11 },
     pie_der:     { x: 76, y: 86, r: 11 },
     hocico:      { x: 50, y: 81, r: 12 }
