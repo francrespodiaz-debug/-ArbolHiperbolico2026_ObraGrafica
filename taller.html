@@ -1485,17 +1485,7 @@ if (name === 'antipin') resetAntipin();
   let mujerConsecutiveErrors = 0;
 
   // Coordenadas exactas (%) tomadas de las 10 flechas de tu estampa
-  const ZONAS_MUJER = {
-    cara:       { x: 24, y: 24, r: 11, label: "Cara" },
-    coletero:   { x: 40, y: 21, r: 10, label: "Coletero en el pelo" },
-    cuello:     { x: 36, y: 34, r: 10, label: "Cuello" },
-    hombro:     { x: 42, y: 45, r: 11, label: "Hombro" },
-    brazo_der:  { x: 23, y: 55, r: 11, label: "Brazo derecho" },
-    mano_der:   { x: 18, y: 74, r: 11, label: "Mano derecha" },
-    brazo_izq:  { x: 43, y: 71, r: 11, label: "Brazo izquierdo" },
-    codo:       { x: 56, y: 77, r: 11, label: "Codo" },
-    espalda:    { x: 57, y: 44, r: 13, label: "Espalda" },
-    culo:       { x: 78, y: 58, r: 13, label: "Culo" }
+  
   };
 
   // Nivel 1: 5 partes básicas con voz automática y sin izquierda/derecha
@@ -1505,7 +1495,20 @@ if (name === 'antipin') resetAntipin();
     { text: "Toca el HOMBRO", voice: "Toca el hombro", key: "hombro" },
     { text: "Toca la ESPALDA", voice: "Toca la espalda", key: "espalda" },
     { text: "Toca el CULO", voice: "Toca el culo", key: "culo" }
-  );
+    );
+    const ZONAS_MUJER = {
+    cara:       { x: 25, y: 24, r: 9,  label: "Cara" },
+    coletero:   { x: 38, y: 27, r: 8,  label: "Coletero en el pelo" },
+    cuello:     { x: 34, y: 39, r: 9,  label: "Cuello" },
+    hombro:     { x: 34, y: 50, r: 9,  label: "Hombro" },
+    brazo_der:  { x: 21, y: 39, r: 9,  label: "Brazo derecho" },
+    mano_der:   { x: 13, y: 69, r: 9,  label: "Mano derecha" },
+    brazo_izq:  { x: 24, y: 74, r: 9,  label: "Brazo izquierdo" },
+    codo:       { x: 34, y: 83, r: 9,  label: "Codo" },
+    espalda:    { x: 56, y: 50, r: 12, label: "Espalda" },
+    culo:       { x: 78, y: 58, r: 12, label: "Culo" }
+  };
+
 
   // Nivel 2: Las 10 partes completas de tu lámina en modo lectura (sin voz automática)
   const MUJER_LVL2 = new Array(
