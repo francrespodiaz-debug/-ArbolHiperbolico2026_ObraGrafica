@@ -1660,53 +1660,175 @@ if (name === 'antipin') resetAntipin();
   }
 
 
-    /* MÓDULO 5: PUZLES ZOOFORMES */
-  const zooList = ['series/zooforme/zooforme01.png', 'series/zooforme/zooforme02.png', 'series/zooforme/zooforme03.png', 'series/zooforme/zooforme04.png', 'series/zooforme/zooforme05.png'];
-  let zooIndex = 0, puzzleGridSize = 2, selectedPieceIdx = null, solvedCount = 0;
-  function nextZooforme() { zooIndex = (zooIndex + 1) % zooList.length; setupPuzzle(puzzleGridSize); }
-  function setupPuzzle(gridSize) {
-    puzzleGridSize = gridSize; selectedPieceIdx = null; solvedCount = 0;
-    const board = document.getElementById('puzzle-board'), tray = document.getElementById('puzzle-pieces');
-    board.innerHTML = ''; tray.innerHTML = '';
-    const tilePx = Math.floor(440 / gridSize);
-    board.style.gridTemplateColumns = `repeat(${gridSize}, ${tilePx}px)`;
-    board.style.gridTemplateRows = `repeat(${gridSize}, ${tilePx}px)`;
-    const img = new Image(); img.crossOrigin = 'anonymous'; img.src = zooList[zooIndex];
-    img.onload = () => {
-      const pieces = [];
-      for (let r = 0; r < gridSize; r++) {
-        for (let c = 0; c < gridSize; c++) {
-          const idx = r * gridSize + c;
-          const slot = document.createElement('div'); slot.className = 'puzzle-slot';
-          slot.style.width = tilePx + 'px'; slot.style.height = tilePx + 'px'; slot.dataset.idx = idx;
-          slot.onclick = () => placePuzzlePiece(slot); board.appendChild(slot);
-          const pc = document.createElement('canvas'); pc.width = tilePx; pc.height = tilePx; pc.className = 'puzzle-piece';
-          pc.style.width = Math.min(115, tilePx) + 'px'; pc.style.height = Math.min(115, tilePx) + 'px'; pc.dataset.idx = idx;
-          pc.getContext('2d').drawImage(img, c * (img.width / gridSize), r * (img.height / gridSize), img.width / gridSize, img.height / gridSize, 0, 0, tilePx, tilePx);
-          pc.onclick = () => {
-            document.querySelectorAll('.puzzle-piece').forEach(el => el.classList.remove('selected-piece'));
-            pc.classList.add('selected-piece'); selectedPieceIdx = idx; playTone(523.25, 0.12);
-          };
-          pieces.push(pc);
-        }
-      }
-      pieces.sort(() => Math.random() - 0.5).forEach(p => tray.appendChild(p));
-    };
+   /* MÓDULO 5: PUZLES ZOOFORMES */
+const zooList = [
+  'series/zooforme/zooforme01.png',
+  'series/zooforme/zooforme02.png',
+  'series/zooforme/zooforme03.png',
+  'series/zooforme/zooforme04.png',
+  'series/zooforme/zooforme05.png'
+];
+const zooTitles = [
+  'Zooforme I',
+  'Zooforme II',
+  'Zooforme III',
+  'Zooforme IV',
+  'Zooforme V'
+];
+let zooIndex = 0, puzzleGridSize = 2, selectedPieceIdx = null, solvedCount = 0;
+let puzzleHintTimer = null, puzzleMissCount = 0;
+
+function clearPuzzleHint() {
+  if (puzzleHintTimer) {
+    clearTimeout(puzzleHintTimer);
+    puzzleHintTimer = null;
   }
-  function placePuzzlePiece(slot) {
-    if (selectedPieceIdx === null) return;
-    if (parseInt(slot.dataset.idx) === selectedPieceIdx && slot.children.length === 0) {
-      const piece = document.querySelector(`.puzzle-piece[data-idx="${selectedPieceIdx}"]`);
-      piece.classList.remove('selected-piece'); piece.style.width = '100%'; piece.style.height = '100%'; piece.style.border = 'none';
-      slot.appendChild(piece); selectedPieceIdx = null; solvedCount++; playTone(659.25, 0.2);
-      if (solvedCount === puzzleGridSize * puzzleGridSize) {
-        document.getElementById('puzzle-feedback').textContent = '🎉 ¡PUZLE COMPLETADO! ¡Gran trabajo en equipo!'; playSuccessChord();
+  document.querySelectorAll('.puzzle-slot').forEach(s => {
+    s.style.boxShadow = '';
+    s.style.backgroundColor = '';
+  });
+}
+
+function showPuzzleSlotHint(idx) {
+  clearPuzzleHint();
+  const targetSlot = document.querySelector(`.puzzle-slot[data-idx="${idx}"]`);
+  if (targetSlot && targetSlot.children.length === 0) {
+    targetSlot.style.boxShadow = 'inset 0 0 0 5px #f59e0b, 0 0 18px rgba(245, 158, 11, 0.75)';
+    targetSlot.style.backgroundColor = 'rgba(254, 243, 199, 0.45)';
+  }
+}
+
+function nextZooforme() {
+  zooIndex = (zooIndex + 1) % zooList.length;
+  setupPuzzle(puzzleGridSize);
+}
+
+function setupPuzzle(gridSize) {
+  clearPuzzleHint();
+  puzzleGridSize = gridSize;
+  selectedPieceIdx = null;
+  solvedCount = 0;
+  puzzleMissCount = 0;
+
+  const board = document.getElementById('puzzle-board');
+  const tray = document.getElementById('puzzle-pieces');
+  const fb = document.getElementById('puzzle-feedback');
+  board.innerHTML = '';
+  tray.innerHTML = '';
+  board.style.gap = '2px';
+  if (fb) fb.textContent = '1. Toca una pieza. 2. Toca su hueco en el tablero.';
+
+  const tilePx = Math.floor(440 / gridSize);
+  const trayPiecePx = gridSize === 2 ? 165 : 122;
+
+  board.style.gridTemplateColumns = `repeat(${gridSize}, ${tilePx}px)`;
+  board.style.gridTemplateRows = `repeat(${gridSize}, ${tilePx}px)`;
+
+  const img = new Image();
+  img.crossOrigin = 'anonymous';
+  img.src = zooList[zooIndex];
+
+  img.onload = () => {
+    const pieces = [];
+    for (let r = 0; r < gridSize; r++) {
+      for (let c = 0; c < gridSize; c++) {
+        const idx = r * gridSize + c;
+        const slot = document.createElement('div');
+        slot.className = 'puzzle-slot';
+        slot.style.width = tilePx + 'px';
+        slot.style.height = tilePx + 'px';
+        slot.style.transition = 'box-shadow 0.3s ease, background-color 0.3s ease';
+        slot.dataset.idx = idx;
+        slot.onclick = () => placePuzzlePiece(slot);
+        board.appendChild(slot);
+
+        const pc = document.createElement('canvas');
+        pc.width = tilePx;
+        pc.height = tilePx;
+        pc.className = 'puzzle-piece';
+        pc.style.width = trayPiecePx + 'px';
+        pc.style.height = trayPiecePx + 'px';
+        pc.style.transition = 'transform 0.2s ease, box-shadow 0.2s ease';
+        pc.dataset.idx = idx;
+        pc.getContext('2d').drawImage(
+          img,
+          c * (img.width / gridSize),
+          r * (img.height / gridSize),
+          img.width / gridSize,
+          img.height / gridSize,
+          0, 0, tilePx, tilePx
+        );
+
+        pc.onclick = () => {
+          clearPuzzleHint();
+          puzzleMissCount = 0;
+          document.querySelectorAll('.puzzle-piece').forEach(el => {
+            el.classList.remove('selected-piece');
+            el.style.transform = '';
+          });
+          pc.classList.add('selected-piece');
+          pc.style.transform = 'scale(1.06)';
+          selectedPieceIdx = idx;
+          playTone(523.25, 0.12);
+
+          if (puzzleGridSize === 2) {
+            puzzleHintTimer = setTimeout(() => showPuzzleSlotHint(idx), 4000);
+          }
+        };
+        pieces.push(pc);
       }
-    } else {
-      playTone(220, 0.18, 'sawtooth');
-      document.getElementById('puzzle-feedback').textContent = 'Esa pieza va en otro hueco. ¡Probad otra posición!';
+    }
+    pieces.sort(() => Math.random() - 0.5).forEach(p => tray.appendChild(p));
+  };
+}
+
+function placePuzzlePiece(slot) {
+  if (selectedPieceIdx === null) return;
+  const fb = document.getElementById('puzzle-feedback');
+
+  if (parseInt(slot.dataset.idx) === selectedPieceIdx && slot.children.length === 0) {
+    clearPuzzleHint();
+    const piece = document.querySelector(`.puzzle-piece[data-idx="${selectedPieceIdx}"]`);
+    piece.classList.remove('selected-piece');
+    piece.style.transform = '';
+    piece.style.width = '100%';
+    piece.style.height = '100%';
+    piece.style.border = 'none';
+    piece.style.borderRadius = '0';
+    piece.onclick = null;
+
+    slot.style.border = 'none';
+    slot.appendChild(piece);
+    selectedPieceIdx = null;
+    puzzleMissCount = 0;
+    solvedCount++;
+    playTone(659.25, 0.2);
+
+    if (solvedCount === puzzleGridSize * puzzleGridSize) {
+      document.getElementById('puzzle-board').style.gap = '0px';
+      const title = zooTitles[zooIndex] || 'Obra Zooforme';
+      if (fb) fb.textContent = `🎉 ¡PUZLE COMPLETADO! "${title}" · ¡Gran trabajo en equipo!`;
+      playSuccessChord();
+      if (typeof soundEnabled !== 'undefined' && soundEnabled && 'speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const u = new SpeechSynthesisUtterance(`¡Muy bien! Habéis completado ${title}`);
+        u.lang = 'es-ES';
+        u.rate = 0.92;
+        window.speechSynthesis.speak(u);
+      }
+    } else if (fb) {
+      fb.textContent = `✅ ¡Encaja perfecto! (${solvedCount} de ${puzzleGridSize * puzzleGridSize})`;
+    }
+  } else {
+    puzzleMissCount++;
+    playTone(220, 0.18, 'sawtooth');
+    if (fb) fb.textContent = 'Esa pieza va en otro hueco. ¡Probad otra posición!';
+    if (puzzleMissCount >= 2) {
+      showPuzzleSlotHint(selectedPieceIdx);
     }
   }
+}
+
 
   /* MÓDULO 6: LIENZO LÁSER */
   let laserDrawing = false, laserSymmetry = true, brushSize = 14, lastLX = 0, lastLY = 0;
